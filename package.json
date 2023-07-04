@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/app.js",
   "repository": "git@github.com:ReCoded-Org/backend-capstone-template.git",
-  "author": "Ammar-64",
+  "author": "Ismail-Said-Ilayda-Baraah",
   "license": "MIT",
   "scripts": {
     "start": "nodemon src/app.js",
