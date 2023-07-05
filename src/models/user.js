@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const userSchema = mongoose.Schema({
   username: {
@@ -13,6 +14,10 @@ const userSchema = mongoose.Schema({
     type: String,
   },
   password_hash: {
+    type: String,
+    required: true,
+  },
+  email: {
     type: String,
     required: true,
   },
