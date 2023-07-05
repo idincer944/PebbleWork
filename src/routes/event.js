@@ -29,10 +29,11 @@ function saveEventAndRedirect(path) {
     event.name = req.body.name;
     event.description = req.body.description;
     event.picture = req.body.picture;
+    event.location = req.body.location;
     // event.users = req.body.users;
     event.time = req.body.time;
     try {
-      event.location = req.session?.user?._id ?? null;
+      event.createduser = req.session?.user?._id ?? null;
       event = await event.save();
       res.redirect(`/event/${event.slug}`);
     } catch (e) {
