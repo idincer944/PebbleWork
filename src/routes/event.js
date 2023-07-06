@@ -1,9 +1,56 @@
 const express = require('express');
 const authenticate = require('../middleware/authenticate');
-// const Event = require('');
-// const event =require('');
+const EventController = require('../controllers/EventController')
+
 const router = express.Router();
 
+
+
+
+router.get('/getAllEvents',EventController.getAllEvents)
+
+
+
+
+
+
+
+module.exports=router
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 // Renders a template for creating a new event.
 router.get('/new', authenticate, (req, res) => {
   res.render('event/new', { event: new Event() });
@@ -80,3 +127,4 @@ router.delete('/:id', authenticate, async (req, res) => {
 });
 
 module.exports = router;
+*/

@@ -1,35 +1,51 @@
 const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
-  firstname: {
+  firstName: {
     type: String,
+    required: true
   },
-  lastname: {
+  lastName: {
     type: String,
+    required: true
   },
-  password_hash: {
+  password: {
+    type: String,
+    required: true
+  },
+  email: {
     type: String,
     required: true,
+    unique: true
   },
-  registered_at: {
+  registeredAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   avatar: {
-    type: String,
+    type: String
   },
-  created_events: {
-    type: Array,
-  },
-  joined_events: {
-    type: Array,
-  },
+  createdEvents: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Event'
+    }
+  ],
+  joinedEvents: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Event'
+    }
+  ]
 });
+
+
+
 
 userSchema.pre('validate', function (next) {
   // slugify username
