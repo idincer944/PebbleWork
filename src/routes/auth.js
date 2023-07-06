@@ -11,6 +11,7 @@ router.get('/all', async (req, res) => {
     const users = await User.find({});
     res.json(users);
 })
+
 router.post('/signin', async (req, res) => {
     const {username, password, rememberMe} = req.body;
     const user = await User.findOne({username});
@@ -62,7 +63,7 @@ router.post('/signup', async (req, res) => {
         return res.status(400).json({error: 'Invalid email'})//change json to render and add the route
     }
 
-    const password_hash = await bycrypt.hash(password, 10);
+    const password_hash = await bcrypt.hash(password, 10);
 
     user = await User.create({
         firstname,
