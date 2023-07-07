@@ -1,7 +1,6 @@
 const express = require('express');
 const authenticate = require('../middleware/authenticate');
-// const Event = require('');
-// const event =require('');
+const Event = require('./../models');
 const router = express.Router();
 
 // Renders a template for creating a new event.
@@ -33,7 +32,7 @@ function saveEventAndRedirect(path) {
     // event.users = req.body.users;
     event.time = req.body.time;
     try {
-      event.createduser = req.session?.user?._id ?? null;
+      event.created_user = req.session?.user?._id ?? null;
       event = await event.save();
       res.redirect(`/event/${event.slug}`);
     } catch (e) {
