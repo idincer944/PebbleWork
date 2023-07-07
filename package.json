@@ -12,7 +12,8 @@
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\"",
     "validate": "yarn format && yarn lint",
     "validate-staged": "lint-staged",
-    "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\""
+    "postinstall": "husky install && husky add .husky/pre-commit \"yarn validate-staged\" && husky add .husky/pre-push \"yarn test\"",
+    "prepare": "husky install"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -36,7 +37,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "husky": "^7.0.4",
+    "husky": "^8.0.0",
     "jest": "^27.4.7",
     "lint-staged": "^12.3.1",
     "nodemon": "^2.0.15",
