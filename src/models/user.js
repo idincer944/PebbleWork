@@ -28,12 +28,18 @@ const userSchema = mongoose.Schema({
   avatar: {
     type: String,
   },
-  created_events: {
-    type: Array,
-  },
-  joined_events: {
-    type: Array,
-  },
+  createdEvents: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Event'
+    }
+  ],
+  joinedEvents: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Event'
+    }
+  ]
 });
 
 userSchema.pre('validate', function (next) {
