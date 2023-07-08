@@ -15,9 +15,8 @@ const sess = {
   cookie: {},
 };
 
-app.use(session(sess))
+app.use(session(sess));
 app.use(express.json());
-
 
 app.use('/user', authRouter);
 app.use('/event', eventRouter);

@@ -31,15 +31,15 @@ const userSchema = mongoose.Schema({
   createdEvents: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Event'
-    }
+      ref: 'Event',
+    },
   ],
   joinedEvents: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Event'
-    }
-  ]
+      ref: 'Event',
+    },
+  ],
 });
 
 userSchema.pre('validate', function (next) {
