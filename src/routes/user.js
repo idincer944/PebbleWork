@@ -4,7 +4,49 @@ const bcrypt = require('bcrypt');
 const authenticate = require('../middleware/authenticate');
 const router = express.Router();
 const EmailValidator = require('email-validator');
+const userController = require('../controllers/userController')
 
+router.get('/getAllUsers', userController.getAllUsers);
+
+/*
+router.post('/signin', userController.signIn);
+
+router.post('/signup', userController.signUp);
+
+router.get('/signout', authenticate, userController.signOut);
+
+router.get('/signup', userController.renderSignUpPage);
+
+router.get('/signin', userController.renderSignInPage);*/
+
+module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 router.get('/all', async (req, res) => {
   const users = await User.find({});
   res.json(users);
@@ -96,5 +138,5 @@ router.get('/signin', (req, res) => {
     res.json('user/signin'); //change json to render and add the route
   else res.redirect('/');
 });
+*/
 
-module.exports = router;
