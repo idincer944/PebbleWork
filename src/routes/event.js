@@ -2,11 +2,10 @@ const express = require('express');
 const authenticate = require('../middleware/authenticate');
 const router = express.Router();
 
-const eventController= require('../controllers/eventController')
+const eventController = require('../controllers/eventController');
 
-
-router.get('/getAllEvents',eventController.getAllEvents)
-router.post('/createNewEvent',eventController.createNewEvent)
+router.get('/getAllEvents', eventController.getAllEvents);
+router.post('/createNewEvent', eventController.createNewEvent);
 router.get('/getEventById/:eventId', eventController.getEventById);
 router.delete('/deleteEvent/:eventId', eventController.deleteEvent);
 

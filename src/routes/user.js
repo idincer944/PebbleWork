@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const authenticate = require('../middleware/authenticate');
 const router = express.Router();
 const EmailValidator = require('email-validator');
-const userController = require('../controllers/userController')
+const userController = require('../controllers/userController');
 
 router.get('/getAllUsers', userController.getAllUsers);
 
@@ -20,31 +20,6 @@ router.get('/signup', userController.renderSignUpPage);
 router.get('/signin', userController.renderSignInPage);*/
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 router.get('/all', async (req, res) => {
@@ -139,4 +114,3 @@ router.get('/signin', (req, res) => {
   else res.redirect('/');
 });
 */
-
