@@ -2,20 +2,20 @@ const express = require('express');
 require('dotenv').config();
 const userRouter = require('./routes/user');
 const eventRouter = require('./routes/event');
-const session = require('express-session');
+// const session = require('express-session');
 const connectToMongo = require('./db');
 
 const app = express();
 
-const sess = {
-  secret: process.env.SESSION_SECRET,
-  name: 'sid',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {},
-};
+// const sess = {
+//   secret: process.env.SESSION_SECRET,
+//   name: 'sid',
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {},
+// };
 
-app.use(session(sess));
+// app.use(session(sess));
 app.use(express.json());
 
 app.use('/user', userRouter);
