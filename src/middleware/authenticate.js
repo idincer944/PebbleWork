@@ -1,11 +1,22 @@
-const authenticate = function (redirect = '/user/signin') {
+const jwt = require('jsonwebtoken');
+
+const authenticate = () => {
   return (req, res, next) => {
-    if (!req.session?.user) {
-      return res.direct(redirect);
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token) {
+      jwt.verify(token, process.env.TOKEN_KEY, (err, user) => {
+        if (err) {
+          return res.status(403).json({ error: 'Invalid token' });
+        }
+        req.user = user;
+        console.log(req.user._id)
+        next();
+      });
+    } else {
+      return res.status(401).json({ error: 'Unauthorized' })
     }
-    req.user = req.session.user;
-    next();
-  };
+  }
 };
 
 module.exports = authenticate;

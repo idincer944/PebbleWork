@@ -3,9 +3,11 @@ const bcrypt = require('bcrypt');
 const authenticate = require('../middleware/authenticate');
 const EmailValidator = require('email-validator');
 const jwt = require('jsonwebtoken');
+const sendMail = require('../utils/mail');
 
 module.exports = {
-  getAllUsers: async (req, res) => {
+  getAllUsers: 
+    async (req, res) => {
     try {
       const users = await User.find({});
       res.status(200).json(users);
@@ -87,6 +89,7 @@ module.exports = {
         email,
         password_hash,
         avatar,
+        token
       });
       // Create token
       const token = jwt.sign(
@@ -98,10 +101,25 @@ module.exports = {
       );
       // save user token
       user.token = token;
+      const link = `http://localhost:3000/user/verify/${token}`;	
+      sendMail(user.email, link)
+
       res.status(201).json(user);
       // res.redirect('/'); // !!!home page or profile page needs to be decided!!!
   } catch (err) {
       console.log(err)
   }
-}
+},
+
+  deleteUser: async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const user = await User.findByIdAndDelete(userId);
+      res.status(200).json(`User ${user.username} deleted`);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: 'Internal Server Error while deleting user' });
+    }
+  },
 };

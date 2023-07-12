@@ -24,6 +24,10 @@ const userSchema = mongoose.Schema({
   token: {
     type: String,
   },
+  is_verified: {
+    type: Boolean,
+    default: false,
+  },
   registered_at: {
     type: Date,
     default: Date.now,
