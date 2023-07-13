@@ -1,6 +1,5 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const authenticate = require('../middleware/authenticate');
 const EmailValidator = require('email-validator');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../utils/mail');
@@ -29,6 +28,10 @@ module.exports = {
       const valid = await bcrypt.compare(password, user.password_hash);
       if (!valid) {
         return res.status(400).json({ error: 'Wrong username or password' });
+      }
+
+      if (!user.is_verified) {
+        return res.send('Please verify your email address'); // ask about this !!!!!
       }
     
       res.setHeader('user', user.id);
@@ -89,7 +92,6 @@ module.exports = {
         email,
         password_hash,
         avatar,
-        token
       });
       // Create token
       const token = jwt.sign(
@@ -99,8 +101,6 @@ module.exports = {
           expiresIn: "2h",
         }
       );
-      // save user token
-      user.token = token;
       const link = `http://localhost:3000/user/verify/${token}`;	
       sendMail(user.email, link)
 
@@ -110,6 +110,42 @@ module.exports = {
       console.log(err)
   }
 },
+
+  signOut: async (req, res) => {
+    try {
+      // Get the user ID from the token
+      const userID = req.headers['user'];
+
+      // Invalidate the token
+      const token = jwt.sign({ user_id: userID }, process.env.TOKEN_KEY, { expiresIn: '0' });
+
+      // Remove the token from the header
+      res.removeHeader('user');
+
+      // Redirect the user to the home page
+      res.redirect('/');
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  renderSignUpPage: (req, res) => {
+    res.send("Hello, sign up")
+  },
+  renderSignInPage: (req, res) => {
+    res.send("Hello, sign in")
+  },
+
+  verifyEmail: async (req, res, next) => {
+    try {
+      const token = req.params.token;
+      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+      const user = await User.findByIdAndUpdate(decoded.user_id, {is_verified: true});
+      res.status(201).json(user); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
+    } catch (error) {
+      res.json(error);
+    }
+  },
 
   deleteUser: async (req, res) => {
     try {

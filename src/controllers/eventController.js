@@ -4,7 +4,6 @@ module.exports = {
   getAllEvents: async (req, res) => {
     try {
       const events = await Event.find({});
-      console.log(user_id)
       res.status(200).send(events);
     } catch (error) {
       console.error(error);

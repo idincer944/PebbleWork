@@ -5,37 +5,18 @@ const userController = require('../controllers/userController');
 
 router.get('/getAllUsers', authenticate(), userController.getAllUsers);
 
-
 router.post('/signin', userController.signIn);
 
 router.post('/signup', userController.signUp);
 
-router.delete('/deleteUser/:id', authenticate(), userController.deleteUser)
+router.delete('/deleteUser/:id', authenticate(), userController.deleteUser);
 
-// router.get('/signout', authenticate(), userController.signOut);
+router.get('/verify/:token', userController.verifyEmail);
 
-// router.get('/signup', userController.renderSignUpPage);
+router.get('/signout', authenticate(), userController.signOut);
 
-// router.get('/signin', userController.renderSignInPage);
+router.get('/signup', userController.renderSignUpPage);
+
+router.get('/signin', userController.renderSignInPage);
 
 module.exports = router;
-/*
-router.get('/signout', authenticate, (req, res) => {
-  req.session.destroy();
-  res.redirect('/');
-});
-
-//jsons sign up page
-router.get('/signup', (req, res) => {
-  if (!req.session?.user)
-    res.json('user/signup'); //change json to render and add the route
-  else res.redirect('/');
-});
-
-// jsons sign in page
-router.get('/signin', (req, res) => {
-  if (!req.session?.user)
-    res.json('user/signin'); //change json to render and add the route
-  else res.redirect('/');
-});
-*/
