@@ -21,6 +21,10 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  is_verified: {
+    type: Boolean,
+    default: false,
+  },
   registered_at: {
     type: Date,
     default: Date.now,
@@ -29,10 +33,12 @@ const userSchema = mongoose.Schema({
     type: String,
   },
   created_events: {
-    type: Array,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event',
   },
   joined_events: {
-    type: Array,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event',
   },
 });
 
