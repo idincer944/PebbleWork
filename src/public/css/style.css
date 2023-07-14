@@ -1,0 +1,30 @@
+html,
+body {
+  font-family: "Inter", sans-serif !important;
+  font-size: 14px;
+}
+
+.logo {
+  font-weight: 900;
+  font-size: 1.3rem;
+}
+
+.logo a {
+  color: black;
+  text-decoration: none;
+}
+
+.logo a:hover {
+  color: black;
+}
+
+.no-select {
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
