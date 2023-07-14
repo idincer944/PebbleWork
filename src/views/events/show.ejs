@@ -1,0 +1,32 @@
+<div class="d-flex justify-content-between">
+    <h1 class="mb-1"><%= event.name %></h1>
+    <div>
+      <a href="/" class="btn btn-secondary">All Events</a>
+    </div>
+  </div>
+  <div class="my-2">
+    <img style="width: 30px;" class="rounded-circle" src="<%= event.createdBy.picture %>" />
+    <small class="text-muted">
+      <%= event.createdBy.fullname %> |
+      <%= event.time.toDateString().split(' ').slice(1).join(' ') %>
+    </small>
+  </div>
+  
+  
+  <div class="event my-5" id="event">
+    <style>
+      #event-html img {
+        width: 100%;
+        object-fit: contain;
+      }
+    </style>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const hasHLJS = !!document.querySelector('.hljs-keyword')
+      if (hasHLJS) {
+        document.head.innerHTML +=
+          '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">'
+      }
+    })
+  </script>

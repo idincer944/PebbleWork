@@ -1,0 +1,26 @@
+<h1 class="mb-4">Events</h1>
+<% if (user) { %>
+<a href="/createNewEvent" class="btn btn-success">New Event</a>
+<% } %>
+
+<% events.forEach(event => { %>
+<div class="card mt-4">
+  <div class="card-body">
+    <h4 class="card-title"><%= event.name %></h4>
+    <div class="card-subtitle text-muted mb-2">
+      <%= event.createdBy.fullname %> |
+      <%= event.time.toDateString().split(' ').slice(1).join(' ') %>
+    </div>
+    <div class="card-text mb-2"><%= event.description %></div>
+    <!-- <a href="articles/<%= article.slug %>" class="btn btn-primary">Read More</a> -->
+    <% if (user && user.id === event.createdBy.id) { %>
+    <!-- <a href="articles/edit/<%= article.id %>" class="btn btn-info">Edit</a> -->
+    <form action="/deleteEvent/<%= event.id %>?_method=DELETE" method="POST" class="d-inline">
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <% } else {%>
+    <!-- <a href="articles/edit/<%= article.id %>" class="btn btn-info">Markdown</a> -->
+    <% } %>
+  </div>
+</div>
+<% }) %>
