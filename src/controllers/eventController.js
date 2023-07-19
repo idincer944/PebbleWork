@@ -1,5 +1,5 @@
 const Event = require('../models/event');
-
+const jwt = require('jsonwebtoken');
 module.exports = {
   getAllEvents: async (req, res) => {
     try {
@@ -11,32 +11,58 @@ module.exports = {
     }
   },
 
-  createNewEvent: async (req, res) => {
-    const eventData = req.body;
-
-    if (
-      !eventData ||
-      !eventData.name ||
-      !eventData.location ||
-      !eventData.time ||
-      !eventData.description ||
-      !eventData.picture ||
-      !eventData.createdBy
-    ) {
-      return res.status(400).send('Missing required event data'); // Bad request status code 400
-    }
-
+   getAllUserEvents: async (req, res) => {
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const userId = decoded.user_id;
+  
     try {
-      const newEvent = new Event(eventData);
-      const savedEvent = await newEvent.save();
-
-      res.status(201).send(savedEvent); // Success status code 201 - Created
+      // Find all events that were created by the user with the given ID
+      const userEvents = await Event.find({ createdBy: userId }).populate({ path: 'createdBy',
+      select: '-_id firstname lastname avatar',});
+  
+      res.status(200).json(userEvents);
     } catch (error) {
       console.error(error);
-      res.status(500).send('Internal Server Error'); // Failure status code 500
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   },
-
+  
+  createNewEvent: async (req, res) => {
+    const {
+      name,
+      location,
+      time,
+      description,
+      picture
+    } = req.body;
+  
+    if (!name || !location || !time || !description || !picture ) {
+      return res.status(400).json({
+        error: 'Missing required event data',
+      });
+    }
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const createdBy =decoded.user_id
+    try {
+      const newEvent = new Event({
+        name,
+        location,
+        time,
+        description,
+        picture,
+        createdBy,
+      });
+  
+      const savedEvent = await newEvent.save();
+  
+      res.status(201).json(savedEvent); // Success status code 201 - Created
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error while creating event'); // Failure status code 500
+    }
+  },
   getEventById: async (req, res) => {
     const { eventId } = req.params;
 
@@ -56,13 +82,30 @@ module.exports = {
 
   deleteEvent: async (req, res) => {
     const { eventId } = req.params;
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const userId = decoded.user_id;
 
     try {
       const event = await Event.findById(eventId);
+      if (event.createdBy!=userId) {
+        return res.status(403).json({ error: 'you are not allowed to cansle or delete this event' });
+      }
 
       if (!event) {
         return res.status(404).json({ error: 'Event not found' });
       }
+
+      
+
+      
+    const eventDate = new Date(event.time);
+    const today = new Date();
+
+    // compare event date with today's date
+    if (eventDate <= today) {
+      return res.status(403).json({ error: "You can't delete past events" });
+    }
       //res.status(200).json(event);
       await Event.findByIdAndDelete(eventId);
 
@@ -73,4 +116,58 @@ module.exports = {
         .json({ error: 'Internal Server Error while deleting event' });
     }
   },
+
+
+  updateEvent: async (req, res) => {
+    const { eventId } = req.params;
+    const eventData = req.body;
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const userId = decoded.user_id;
+
+    try {
+      const event = await Event.findById(eventId);
+      if (event.createdBy!=userId) {
+        return res.status(403).json({ error: 'you are not allowed to edit this event' });
+      }
+
+      if (!event) {
+        return res.status(404).json({ error: 'Event not found' });
+      }
+      // we are not allowing the user to change the other properties.
+      event.name = eventData.name || event.name;
+      event.location = eventData.location || event.location;
+      event.time = eventData.time || event.time;
+      event.description = eventData.description || event.description;
+      event.picture = eventData.picture || event.picture;
+
+      await event.save();
+
+      res.status(200).json({ message: 'Event updated successfully', event });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: 'Internal Server Error while updating event' });
+    }
+  },
+
+
+
+  searchEvents: async (req, res) => {
+    const searchQuery = req.query.q;
+
+    try {
+        const events = await Event.find({
+            $or: [
+                { name: { $regex: searchQuery, $options: 'i' } },
+                { description: { $regex: searchQuery, $options: 'i' } }
+            ]
+        });
+
+        res.status(200).json({ message: 'Events found successfully', events });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error while searching events' });
+    }
+}
+
 };
