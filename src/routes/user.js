@@ -11,7 +11,7 @@ router.post('/signup', userController.signUp);
 
 router.delete('/deleteUser/:id', authenticate(), userController.deleteUser);
 
-router.get('/verify/:token', userController.verifyEmail);
+router.get('/verify', userController.verifyEmail);
 
 router.get('/signout', authenticate(), userController.signOut);
 
