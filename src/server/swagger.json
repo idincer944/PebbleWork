@@ -1,0 +1,174 @@
+{
+    "paths": {
+      "/getAllUsers": {
+        "get": {
+          "summary": "Getting all users",
+          "tags": [
+            "User"
+          ],
+          "operationId": "getUsers",
+          "responses": {
+            "200": {
+              "description": "All the users",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/src/models/user.js"
+                  }
+                }
+              }
+            }
+          },
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                    "$ref": "#/src/models/user.js"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/signin": {
+        "post": {
+          "summary": "Sign in the user",
+          "tags": [
+            "User"
+          ],
+          "operationId": "signinUser",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/src/models/user.js"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Sign-in successfully"
+            }
+          }
+        }
+      },
+      "/signup": {
+        "post": {
+          "summary": "Sign up the user",
+          "tags": [
+            "User"
+          ],
+          "operationId": "signupUser",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/src/models/user.js"
+              }
+            }
+          }
+          },
+          "responses": {
+            "200": {
+              "description": "Sign-up successfully"
+            }
+          }
+        }
+      },
+      "/deleteUser/{id}": {
+        "delete": {
+          "summary": "Deleting user by its ID",
+          "tags": [
+            "User"
+          ],
+          "operationId": "deleteUser",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID numbers that need to be considered for deleting",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+              
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/src/models/user.js"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Deleting successfully"
+            }
+          }
+        }
+      },
+      "/verify": {
+        "get": {
+          "summary": "Verifying the user email",
+          "tags": [
+            "User"
+          ],
+          "operationId": "verifyToken",
+          "parameters": [
+            {
+              "name": "token",
+              "in": "path",
+              "description": "The verification token",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/src/models/user.js"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Verifying successfully"
+            }
+          }
+        }
+      },
+      "/signout": {
+        "get": {
+          "summary": "Sign out the user",
+          "tags": [
+            "User"
+          ],
+          "operationId": "signoutUser",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/src/models/user.js"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Sign-out successfully"
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  
