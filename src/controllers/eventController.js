@@ -198,8 +198,7 @@ module.exports = {
   }
 }
 
-// Usage:
-// app.post('/joinEvent/:eventId', joinEvent);
+
 
 
 };
