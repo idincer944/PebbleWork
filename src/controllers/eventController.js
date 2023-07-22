@@ -168,6 +168,38 @@ module.exports = {
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error while searching events' });
     }
+},
+
+
+ joinEvent :async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const userId = decoded.user_id;
+
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    if (event.participants.includes(userId)) {
+      return res.status(409).json({ error: 'User is already part of the event' });
+    }
+
+    event.participants.push(userId);
+
+    await event.save();
+    return res.status(200).json({ message: 'joined successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error while joining event' });
+  }
 }
+
+// Usage:
+// app.post('/joinEvent/:eventId', joinEvent);
+
 
 };
