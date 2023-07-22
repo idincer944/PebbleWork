@@ -196,9 +196,38 @@ module.exports = {
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error while joining event' });
   }
+},
+
+leaveEvent : async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+    const userId = decoded.user_id;
+
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    // Check if the user is already part of the event
+    if (!event.participants.includes(userId)) {
+      return res.status(409).json({ error: 'User is not part of the event' });
+    }
+
+    // Remove the user's ID from the event's participants array
+    await Event.updateOne({ _id: eventId }, { $pull: { participants: userId } });
+    console.log(userId)
+    console.log(event.name)
+
+    await event.save();
+    return res.status(200).json({ message: 'Left the event successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error while leaving the event' });
+  }
 }
-
-
 
 
 };

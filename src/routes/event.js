@@ -14,4 +14,5 @@ router.put('/updateEvent/:eventId', authenticate(), eventController.updateEvent)
 router.get('/searchEvents', eventController.searchEvents);
 
 router.post('/joinEvent/:eventId', authenticate(), eventController.joinEvent)
+router.post('/leaveEvent/:eventId', authenticate(), eventController.leaveEvent)
 module.exports = router;
