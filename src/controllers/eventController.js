@@ -12,9 +12,8 @@ module.exports = {
   },
 
    getAllUserEvents: async (req, res) => {
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-    const userId = decoded.user_id;
+    
+    const userId = req.user.user_id;
   
     try {
       // Find all events that were created by the user with the given ID
@@ -42,9 +41,8 @@ module.exports = {
         error: 'Missing required event data',
       });
     }
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-    const createdBy =decoded.user_id
+   
+    const createdBy =req.user.user_id
     try {
       const newEvent = new Event({
         name,
@@ -82,9 +80,8 @@ module.exports = {
 
   deleteEvent: async (req, res) => {
     const { eventId } = req.params;
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-    const userId = decoded.user_id;
+ 
+    const userId = req.user.user_id;
 
     try {
       const event = await Event.findById(eventId);
@@ -121,9 +118,8 @@ module.exports = {
   updateEvent: async (req, res) => {
     const { eventId } = req.params;
     const eventData = req.body;
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-    const userId = decoded.user_id;
+    
+    const userId = req.user.user_id
 
     try {
       const event = await Event.findById(eventId);
@@ -175,9 +171,8 @@ module.exports = {
   try {
     const { eventId } = req.params;
 
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-    const userId = decoded.user_id;
+    
+    const userId = req.user.user_id
 
     const event = await Event.findById(eventId);
 
@@ -202,9 +197,7 @@ leaveEvent : async (req, res) => {
   try {
     const { eventId } = req.params;
 
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-    const userId = decoded.user_id;
+    const userId = req.user.user_id
 
     const event = await Event.findById(eventId);
 
@@ -219,8 +212,7 @@ leaveEvent : async (req, res) => {
 
     // Remove the user's ID from the event's participants array
     await Event.updateOne({ _id: eventId }, { $pull: { participants: userId } });
-    console.log(userId)
-    console.log(event.name)
+
 
     await event.save();
     return res.status(200).json({ message: 'Left the event successfully' });
