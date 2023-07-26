@@ -1,5 +1,23 @@
 const Joi = require('joi');
 
+const validateCategory = (value, helpers) => {
+    const allowedCategories = [
+      'charity',
+      'education',
+      'environment',
+      'health',
+      'animals',
+      'community',
+      'other',
+    ];
+  
+    if (!allowedCategories.includes(value)) {
+      return helpers.error('any.invalid');
+    }
+  
+    return value;
+  };
+
 function validateEvent(Event) {
   const validationSchema = Joi.object({
     name: Joi.string().trim().required().min(3).max(50).messages({
@@ -38,6 +56,12 @@ function validateEvent(Event) {
         'string.pattern.base':
           'Invalid picture file type. Only JPG, JPEG, PNG, and GIF are allowed.',
       }),
+      category: Joi.string().trim().required().custom(validateCategory).messages({
+        'string.base': 'Category must be a string',
+        'string.empty': 'Category is required',
+        'any.required': 'Category is required',
+        'any.invalid': 'Invalid category',
+      })
   });
 
   return validationSchema.validate(Event, { abortEarly: false });

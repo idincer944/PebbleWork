@@ -32,6 +32,19 @@ const eventSchema = new mongoose.Schema({
       ref: 'User',
     },
   ],
+  category: {
+    type: String,
+    enum: [
+      'charity',
+      'education',
+      'environment',
+      'health',
+      'animals',
+      'community',
+      'other',
+    ],
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Event', eventSchema);
