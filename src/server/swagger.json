@@ -1,239 +1,222 @@
 {
-    "paths": {
-      "/getAllUsers": {
-        "get": {
-          "summary": "Getting all users",
-          "tags": [
-            "User"
-          ],
-          "operationId": "getUsers",
-          "responses": {
-            "200": {
-              "description": "All the users"
-            }
+  "paths": {
+    "/getAllUsers": {
+      "get": {
+        "summary": "Getting all users",
+        "tags": ["User"],
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "All the users"
           }
         }
-      },
-      "/signin": {
-        "post": {
-          "summary": "Sign in the user",
-          "tags": [
-            "User"
-          ],
-          "operationId": "signinUser",
-          "parameters": [
-            {
-              "name": "username",
-              "in": "query",
-              "description": "The user name for login",
-              "required": false
-              },
-            {
-              "name": "password",
-              "in": "query",
-              "description": "The password for login in clear text",
-              "required": false
-              }
-          ],
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-
-            }
-              }
-            }
+      }
+    },
+    "/signin": {
+      "post": {
+        "summary": "Sign in the user",
+        "tags": ["User"],
+        "operationId": "signinUser",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "description": "The user name for login",
+            "required": false
           },
-          "responses": {
-            "200": {
-              "description": "Sign-in successfully"
-            },
-            "400": {
-              "description": "Invalid username/password supplied"
+          {
+            "name": "password",
+            "in": "query",
+            "description": "The password for login in clear text",
+            "required": false
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {}
             }
           }
+        },
+        "responses": {
+          "200": {
+            "description": "Sign-in successfully"
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
         }
-      },
-      "/signup": {
-        "post": {
-          "summary": "Sign up the user",
-          "tags": [
-            "User"
-          ],
-          "operationId": "signupUser",
-          "requestBody": {
+      }
+    },
+    "/signup": {
+      "post": {
+        "summary": "Sign up the user",
+        "tags": ["User"],
+        "operationId": "signupUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Sign-up successfully"
+          }
+        }
+      }
+    },
+    "/deleteUser/{id}": {
+      "delete": {
+        "summary": "Deleting user by its ID",
+        "tags": ["User"],
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID numbers that need to be considered for deleting",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid id supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/verify": {
+      "get": {
+        "summary": "Verifying the user email",
+        "tags": ["User"],
+        "operationId": "verifyToken",
+        "responses": {
+          "201": {
+            "description": "User email verification successful",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/User"
-              }
-            }
-          }
-          },
-          "responses": {
-            "default": {
-              "description": "Sign-up successfully"
-            }
-          }
-        }
-      },
-      "/deleteUser/{id}": {
-        "delete": {
-          "summary": "Deleting user by its ID",
-          "tags": [
-            "User"
-          ],
-          "operationId": "deleteUser",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "description": "ID numbers that need to be considered for deleting",
-              "required": true
-              }
-          ],
-          "responses": {
-            "400": {
-              "description": "Invalid id supplied"
-            },
-            "404": {
-              "description": "User not found"
-            }
-          }
-        }
-      },
-      "/verify": {
-        "get": {
-          "summary": "Verifying the user email",
-          "tags": [
-            "User"
-          ],
-          "operationId": "verifyToken",
-          "responses": {
-            "201": {
-              "description": "User email verification successful",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/User"
-                  }
                 }
               }
-            }
-          }
-        }
-      },
-      "/signout": {
-        "get": {
-          "summary": "Sign out the user",
-          "tags": [
-            "User"
-          ],
-          "operationId": "signoutUser",
-          "responses": {
-            "default": {
-              "description": "Sign-out successfully"
             }
           }
         }
       }
     },
-        "components": {
-          "schemas": {
-            "Events": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "integer",
-                  "format": "int64",
-                  "example": 10
-                },
-                "location": {
-                  "type": "integer",
-                  "properties": {
-                    "street": {
-                      "type": "string",
-                      "example": "437 Lytton"
-                    },
-                    "city": {
-                      "type": "string",
-                      "example": "Palo Alto"
-                    },
-                    "state": {
-                      "type": "string",
-                      "example": "CA"
-                    },
-                    "zip": {
-                      "type": "string",
-                      "example": "94301"
-                    },
-                    "xml": {
-                      "name": "address"
-                    }
-                  }
-                },
-                "time": {
-                  "type": "integer",
-                  "format": "date-time",
-                  "example": 7
-                },
-                "description": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "picture": {
-                    "type": "array",
-                    "xml": {
-                      "wrapped": true
-                    },
-                    "items": {
-                      "type": "string",
-                      "xml": {
-                        "name": "photoUrl"
-                      }
-                    }
-                },
-                "createdBy": {
-                  "type": "boolean"
-                }
-              }
-            },
-            "User": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "type": "string",
-                  "example": "theUser"
-                },
-                "firstName": {
-                  "type": "string",
-                  "example": "John"
-                },
-                "lastName": {
-                  "type": "string",
-                  "example": "James"
-                },
-                "email": {
-                  "type": "string",
-                  "example": "john@email.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "12345"
-                },
-                "password2": {
-                  "type": "string",
-                  "example": "12345"
-                },
-                "acceptTos": {
-                    "type": "boolean",
-                    "example": "true"
-
-                }
+    "/signout": {
+      "get": {
+        "summary": "Sign out the user",
+        "tags": ["User"],
+        "operationId": "signoutUser",
+        "responses": {
+          "default": {
+            "description": "Sign-out successfully"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Events": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "location": {
+            "type": "integer",
+            "properties": {
+              "street": {
+                "type": "string",
+                "example": "437 Lytton"
+              },
+              "city": {
+                "type": "string",
+                "example": "Palo Alto"
+              },
+              "state": {
+                "type": "string",
+                "example": "CA"
+              },
+              "zip": {
+                "type": "string",
+                "example": "94301"
+              },
+              "xml": {
+                "name": "address"
               }
             }
+          },
+          "time": {
+            "type": "integer",
+            "format": "date-time",
+            "example": 7
+          },
+          "description": {
+            "type": "string",
+            "format": "int64"
+          },
+          "picture": {
+            "type": "array",
+            "xml": {
+              "wrapped": true
+            },
+            "items": {
+              "type": "string",
+              "xml": {
+                "name": "photoUrl"
+              }
+            }
+          },
+          "createdBy": {
+            "type": "boolean"
+          }
         }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "theUser"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "James"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345"
+          },
+          "password2": {
+            "type": "string",
+            "example": "12345"
+          },
+          "acceptTos": {
+            "type": "boolean",
+            "example": "true"
+          }
+        }
+      }
     }
   }
-  
-  
+}

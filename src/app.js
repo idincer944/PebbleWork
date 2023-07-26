@@ -32,14 +32,15 @@ let swaggerSpec = {
   info: {
     title: 'Express API with Swagger',
     version: '1.0.0',
-    description: 'This is a simple API application made with Express and documented with Swagger',
-    license: { name: 'MIT', url: 'https://spdx.org/licenses/MIT.html' }
+    description:
+      'This is a simple API application made with Express and documented with Swagger',
+    license: { name: 'MIT', url: 'https://spdx.org/licenses/MIT.html' },
   },
   servers: [{ url: 'http://localhost:3000/api-docs' }],
   paths: {},
   components: {},
   tags: [],
-  apis: ["./routes/user.js"],
+  apis: ['./routes/user.js'],
 };
 
 const filePath = path.join(__dirname, './server/swagger.json');
@@ -54,12 +55,15 @@ fs.readFile(filePath, 'utf8', (err, data) => {
 
     Object.assign(swaggerSpec, swaggerDocument);
 
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-
+    app.use(
+      '/api-docs',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerSpec, { explorer: true })
+    );
   } catch (parseError) {
     console.error('Error parsing the Swagger JSON data:', parseError);
   }
-  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
