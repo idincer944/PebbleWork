@@ -43,4 +43,48 @@ function validateEvent(Event) {
   return validationSchema.validate(Event, { abortEarly: false });
 }
 
-module.exports = validateEvent;
+
+
+
+
+function validateUser(user) {
+    const validationSchema = Joi.object({
+      username: Joi.string().trim().alphanum().min(3).max(50).required().messages({
+        'string.base': 'Username must be a string',
+        'string.empty': 'Username is required',
+        'any.required': 'Username is required',
+        'string.min': 'Username should have a minimum of {#limit} characters',
+        'string.max': 'Username should have a maximum of {#limit} characters',
+        'string.alphanum': 'Username must only contain alphanumeric characters',
+      }),
+      firstname: Joi.string().trim().allow('').max(50).messages({
+        'string.base': 'Firstname must be a string',
+        'string.max': 'Firstname should have a maximum of {#limit} characters',
+      }),
+      lastname: Joi.string().trim().allow('').max(50).messages({
+        'string.base': 'Lastname must be a string',
+        'string.max': 'Lastname should have a maximum of {#limit} characters',
+      }),
+      password: Joi.string().trim().required().min(6).max(255).messages({
+        'string.base': 'Password must be a string',
+        'string.empty': 'Password is required',
+        'any.required': 'Password is required',
+        'string.min': 'Password should have a minimum of {#limit} characters',
+        'string.max': 'Password should have a maximum of {#limit} characters',
+      }),
+      email: Joi.string().trim().email().required().messages({
+        'string.base': 'Email must be a string',
+        'string.empty': 'Email is required',
+        'any.required': 'Email is required',
+        'string.email': 'Email must be a valid email address',
+      }),
+      is_verified: Joi.boolean(),
+      registered_at: Joi.date().default(Date.now),
+      avatar: Joi.string(),
+      created_events: Joi.array().items(Joi.string().hex()),
+    });
+  
+    return validationSchema.validate(user, { abortEarly: false });
+  }
+  
+module.exports = {validateEvent,validateUser};

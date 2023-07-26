@@ -1,11 +1,14 @@
 const Event = require('../models/event');
 //const jwt = require('jsonwebtoken');
-const validateEvent = require('../utils/validations');
+const {validateEvent} = require('../utils/validations');
 
 module.exports = {
   getAllEvents: async (req, res) => {
     try {
-      const events = await Event.find({});
+      const events = await Event.find({}).populate({
+        path: 'participants',
+        select: 'username avatar',
+      });
       res.status(200).send(events);
     } catch (error) {
       console.error(error);
@@ -68,8 +71,8 @@ module.exports = {
     const { eventId } = req.params;
 
     try {
-      // Assuming there is a model called Event
-      const event = await Event.findById(eventId);
+ 
+      const event = await Event.findById(eventId)
 
       if (!event) {
         return res.status(404).json({ error: 'Event not found' });
