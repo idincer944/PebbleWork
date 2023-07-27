@@ -11,6 +11,7 @@ router.get('/getEventById/:eventId', eventController.getEventById);
 router.delete('/deleteEvent/:eventId',authenticate(),eventController.deleteEvent);
 router.put('/updateEvent/:eventId',authenticate(),eventController.updateEvent);
 router.get('/searchEvents', eventController.searchEvents);
+router.get('/filterhEvents', eventController.filterhEvents);
 router.post('/joinEvent/:eventId', authenticate(), eventController.joinEvent);
 router.post('/leaveEvent/:eventId', authenticate(), eventController.leaveEvent);
 module.exports = router;

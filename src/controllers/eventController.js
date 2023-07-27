@@ -175,6 +175,54 @@ module.exports = {
     }
   },
 
+
+  filterhEvents : async (req, res) =>{
+    const {
+      searchQuery,
+      startDate,
+      endDate,
+      location,
+      category,
+    } = req.query;
+
+    try {
+      const filter ={};
+  
+      if (searchQuery) {
+        filter.$or = [
+          { name: { $regex: searchQuery, $options: 'i' } },
+          { description: { $regex: searchQuery, $options: 'i' } },
+        ];
+      }
+  
+      if (startDate && endDate) {
+        filter.time = { $gte: new Date(startDate), $lte: new Date(endDate) };
+      } else if (startDate) {
+        filter.time = { $gte: new Date(startDate) };
+      } else if (endDate) {
+        filter.time = { $lte: new Date(endDate) };
+      }
+  
+      if (location) {
+        filter.location = location;
+      }
+  
+      if (category) {
+        filter.category = category;
+      }
+  
+      const events = await Event.find(filter);
+      if(events.length===0){
+        res.status(404).json({ message: 'there is no events found with these filters'});
+      }
+  
+      res.status(200).json({ message: 'Events found successfully', events });
+    } catch (error) {
+      console.error('Error filtering events:', error);
+      res.status(500).json({ error: 'Internal Server Error while searching events' });
+    }
+  },
+
   joinEvent: async (req, res) => {
     try {
       const { eventId } = req.params;
