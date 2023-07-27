@@ -45,6 +45,26 @@ const eventSchema = new mongoose.Schema({
     ],
     required: true,
   },
+
+  maxParticipants: {
+    type: Number,
+    default: 0,
+  },
+  registrationDeadline: {
+    type: Date,
+    default: function () {
+      const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds
+      return new Date(this.time.getTime() - oneDay);
+    },
+  },
+  eventWebsite: {
+    type: String,
+    required:false,
+  },
+  isPublished: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 module.exports = mongoose.model('Event', eventSchema);

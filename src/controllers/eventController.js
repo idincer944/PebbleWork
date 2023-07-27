@@ -85,7 +85,7 @@ module.exports = {
     }
   },
 
-  deleteEvent: async (req, res) => {
+  cancleEvent: async (req, res) => {
     const { eventId } = req.params;
 
     const userId = req.user.user_id;
@@ -109,12 +109,13 @@ module.exports = {
 
       // compare event date with today's date
       if (eventDate <= today) {
-        return res.status(403).json({ error: "You can't delete past events" });
+        return res.status(403).json({ error: "You can't cancle past events" });
       }
       //res.status(200).json(event);
-      await Event.findByIdAndDelete(eventId);
-
-      res.status(200).json({ message: 'Event deleted successfully' });
+       const eventToCancle = await Event.findById(eventId);
+       eventToCancle.isPublished=false
+       await eventToCancle.save()
+      res.status(200).json({ message: 'Event cancled successfully' });
     } catch (error) {
       res
         .status(500)
@@ -145,6 +146,10 @@ module.exports = {
       event.time = eventData.time || event.time;
       event.description = eventData.description || event.description;
       event.picture = eventData.picture || event.picture;
+      event.maxParticipants = eventData.maxParticipants || event.maxParticipants;
+      event.isPublished = eventData.hasOwnProperty('isPublished')? eventData.isPublished: event.isPublished;
+      event.registrationDeadline = eventData.registrationDeadline || event.registrationDeadline;
+      event.eventWebsite = eventData.eventWebsite || event.eventWebsite;
 
       await event.save();
 
@@ -228,19 +233,37 @@ module.exports = {
       const { eventId } = req.params;
 
       const userId = req.user.user_id;
-
+      
       const event = await Event.findById(eventId);
 
       if (!event) {
         return res.status(404).json({ error: 'Event not found' });
       }
 
+      if (!event.isPublished) {
+        return res
+        .status(403)
+        .json({ error: 'Event has been canceled, you cant join cancled event' });
+      }
+
+      if (event.participants.length >= event.maxParticipants) {
+        return res
+        .status(409)
+        .json({ error: 'Event capacity has been reached.' });
+      }
+      
+      const now = new Date();
+      if ( now > event.registrationDeadline) {
+        return res
+        .status(409)
+        .json({ error: 'Registration deadline has passed.' });
+      }
+      
       if (event.participants.includes(userId)) {
         return res
           .status(409)
           .json({ error: 'User is already part of the event' });
       }
-
       event.participants.push(userId);
 
       await event.save();
