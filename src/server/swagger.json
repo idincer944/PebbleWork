@@ -3,7 +3,9 @@
     "/getAllUsers": {
       "get": {
         "summary": "Getting all users",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "operationId": "getUsers",
         "responses": {
           "200": {
@@ -15,26 +17,30 @@
     "/signin": {
       "post": {
         "summary": "Sign in the user",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "operationId": "signinUser",
         "parameters": [
           {
             "name": "username",
             "in": "query",
             "description": "The user name for login",
-            "required": false
-          },
+            "required": true
+            },
           {
             "name": "password",
             "in": "query",
             "description": "The password for login in clear text",
-            "required": false
-          }
+            "required": true
+            }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {}
+              "schema": {
+
+          }
             }
           }
         },
@@ -51,20 +57,35 @@
     "/signup": {
       "post": {
         "summary": "Sign up the user",
-        "tags": ["User"],
+        "tags": [
+        "User"
+        ],
         "operationId": "signupUser",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/User"
-              }
             }
           }
+        }
         },
         "responses": {
           "default": {
-            "description": "Sign-up successfully"
+            "description": "Sign-up successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+              }
+            },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+
           }
         }
       }
@@ -72,7 +93,9 @@
     "/deleteUser/{id}": {
       "delete": {
         "summary": "Deleting user by its ID",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "operationId": "deleteUser",
         "parameters": [
           {
@@ -80,7 +103,7 @@
             "in": "path",
             "description": "ID numbers that need to be considered for deleting",
             "required": true
-          }
+            }
         ],
         "responses": {
           "400": {
@@ -95,7 +118,9 @@
     "/verify": {
       "get": {
         "summary": "Verifying the user email",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "operationId": "verifyToken",
         "responses": {
           "201": {
@@ -114,7 +139,9 @@
     "/signout": {
       "get": {
         "summary": "Sign out the user",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "operationId": "signoutUser",
         "responses": {
           "default": {
@@ -122,7 +149,206 @@
           }
         }
       }
+    },
+
+
+    "/getAllEvents": {
+      "get": {
+        "summary": "Getting all events",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "getEvents",
+        "responses": {
+          "200": {
+            "description": "All the events"
+          }
+        }
+      }
+    },
+    "/createdEvents": {
+      "get": {
+        "summary": "Find all events that were created by the user with the given ID",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "getAllUserEvents",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID number that need to be considered for getting events",
+            "required": true
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Events"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+    "/createNewEvent": {
+      "post": {
+        "summary": "Creating new event",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "createNewEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+            }
+          }
+        }
+        },
+        "responses": {
+          "200": {
+            "description": "Creating new event successfully"
+          }
+        }
+      }
+    },
+    "/getEventById/:eventId": {
+      "get": {
+        "summary": "Find event by its ID",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "getEventById",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID numbers that need to be considered for getting an event",
+            "required": true
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "Find event by ID successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                 "$ref": "#/components/schemas/Events"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          },
+          "404": {
+            "description": "Event not found"
+          }
+        }
+      }
     }
+    }
+  },
+    "/deleteEvent/:eventId": {
+      "delete": {
+        "summary": "Deleting event",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "deleteEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "Event id to delete",
+            "required": true
+            }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid event value"
+        }
+      }
+    }
+  },
+    "/updateEvent/:eventId": {
+      "put": {
+        "summary": "Update event",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "updateEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID of event that needs to be updated",
+            "required": true
+            },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name of event that needs to be updated",
+            "required": false
+            }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/searchEvents": {
+      "get": {
+        "summary": "Search event",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "searchEvents",
+        "responses": {
+          "default": {
+            "description": "Search event successfully"
+          }
+        }
+      }
+    },
+    "/joinEvent/:eventId": {
+      "post": {
+        "summary": "Join event",
+        "tags": [
+          "Event"
+        ],
+        "operationId": "joinEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID of event that needs to be updated",
+            "required": true
+            },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID that checks already part of the event or not",
+            "required": true
+            }
+        ],
+        "responses": {
+          "default": {
+            "description": "Join event successfully"
+          }
+        }
+      }
+    }
+    
   },
   "components": {
     "schemas": {
@@ -130,9 +356,9 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "integer",
+            "type": "string",
             "format": "int64",
-            "example": 10
+            "example": "Climate Action Meeting"
           },
           "location": {
             "type": "integer",
@@ -152,35 +378,30 @@
               "zip": {
                 "type": "string",
                 "example": "94301"
-              },
-              "xml": {
-                "name": "address"
               }
             }
           },
           "time": {
-            "type": "integer",
+            "type": "string",
             "format": "date-time",
-            "example": 7
+            "example": "07/07/2007"
           },
           "description": {
             "type": "string",
-            "format": "int64"
+            "format": "int64",
+            "example": "It is an online event for people to get plugged in and charged up with climate action"
           },
           "picture": {
-            "type": "array",
-            "xml": {
-              "wrapped": true
-            },
-            "items": {
-              "type": "string",
+              "type": "array",
               "xml": {
-                "name": "photoUrl"
+                "wrapped": true
+              },
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl"
+                }
               }
-            }
-          },
-          "createdBy": {
-            "type": "boolean"
           }
         }
       },
@@ -212,11 +433,57 @@
             "example": "12345"
           },
           "acceptTos": {
-            "type": "boolean",
-            "example": "true"
+              "type": "boolean"
+
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "tag"
+        }
+      },
+      "requestBodies": {
+        "Pet": {
+          "description": "Pet object that needs to be added to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pet"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Pet"
+              }
+            }
+          }
+        },
+        "UserArray": {
+          "description": "List of user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
           }
         }
       }
     }
   }
 }
+
