@@ -95,6 +95,13 @@ function validateUser(user) {
         'any.required': 'Password is required',
         'string.min': 'Password should have a minimum of {#limit} characters',
         'string.max': 'Password should have a maximum of {#limit} characters',
+      }), 
+      password2: Joi.string().trim().required().min(6).max(255).messages({
+        'string.base': 'Password2 must be a string',
+        'string.empty': 'Password2 is required',
+        'any.required': 'Password2 is required',
+        'string.min': 'Password2 should have a minimum of {#limit} characters',
+        'string.max': 'Password2 should have a maximum of {#limit} characters',
       }),
       email: Joi.string().trim().email().required().messages({
         'string.base': 'Email must be a string',
@@ -103,6 +110,10 @@ function validateUser(user) {
         'string.email': 'Email must be a valid email address',
       }),
       is_verified: Joi.boolean(),
+      acceptTos: Joi.boolean().required().messages({
+        'any.required': 'You must accept the {{#label}} (terms of service) to proceed.',
+        'boolean.base': 'The {#label} (terms of service)  must be a boolean value.',
+      }),
       registered_at: Joi.date().default(Date.now),
       avatar: Joi.string(),
       created_events: Joi.array().items(Joi.string().hex()),
