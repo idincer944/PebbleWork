@@ -36,7 +36,6 @@ const userSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
   },
-
 });
 
 userSchema.pre('validate', function (next) {
