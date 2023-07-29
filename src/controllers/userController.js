@@ -2,8 +2,9 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const EmailValidator = require('email-validator');
 const jwt = require('jsonwebtoken');
-const sendMail = require('../utils/mail');
+//const sendMail = require('../utils/mailing/send-mail');
 const {validateUser} = require('../utils/validations');
+const mailFunctions = require('../utils/mailing/mail-functions');
 module.exports = {
   getAllUsers: async (req, res) => {
     try {
@@ -30,7 +31,7 @@ module.exports = {
       }
 
       // create token
-      const token = jwt.sign({ user_id: user._id }, process.env.TOKEN_KEY, {
+      const token = jwt.sign({ user_id: user._id,email:user.email }, process.env.TOKEN_KEY, {
         expiresIn: '2h',
       });
       // save user token in a cookie
@@ -45,7 +46,7 @@ module.exports = {
       if (!user.is_verified) 
       {
           const link = `http://localhost:3000/user/verify/${token}`;
-          sendMail(user.email, link,username);
+          mailFunctions.sendVerificationEmail(user.email, link,username);
           res.status(201).json({message:`Hello ${user.firstname}, appearntly you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`});
       }
      
@@ -104,7 +105,7 @@ module.exports = {
       });
       // Create token
       const token = jwt.sign(
-        { user_id: user._id, email },
+        { user_id: user._id,email:user.email  },
         process.env.TOKEN_KEY,
         {
           expiresIn: '2h',
@@ -118,7 +119,7 @@ module.exports = {
         maxAge: 2 * 60 * 60 * 1000,
       });
       const link = `http://localhost:3000/user/verify/${token}`;
-      sendMail(user.email, link,username);
+      mailFunctions.sendVerificationEmail(user.email, link,username);
     
       res.status(201).json({message:`Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`});
       

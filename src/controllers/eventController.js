@@ -1,6 +1,7 @@
 const Event = require('../models/event');
 //const jwt = require('jsonwebtoken');
 const {validateEvent} = require('../utils/validations');
+const mailFunctions = require('../utils/mailing/mail-functions');
 
 module.exports = {
   getAllEvents: async (req, res) => {
@@ -267,7 +268,9 @@ module.exports = {
       event.participants.push(userId);
 
       await event.save();
+      mailFunctions.sendJoinedEventEmail(req.user.email,event.name, event.time) 
       return res.status(200).json({ message: 'joined successfully' });
+      
     } catch (error) {
       return res
         .status(500)
@@ -299,6 +302,7 @@ module.exports = {
       );
 
       await event.save();
+      mailFunctions.sendLeftEventEmail(req.user.email,event.name,event.time)
       return res.status(200).json({ message: 'Left the event successfully' });
     } catch (error) {
       return res
