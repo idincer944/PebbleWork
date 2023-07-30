@@ -19,6 +19,6 @@ router.post('/leaveEvent/:eventId', authenticate(), eventController.leaveEvent);
 
 //commnets
 router.post('/addComment/:eventId', authenticate(), commentController.addComment);
-
+router.delete('/deleteComment/:commentId', authenticate(), commentController.deleteComment);
 
 module.exports = router;
