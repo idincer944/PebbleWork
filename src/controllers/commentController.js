@@ -60,7 +60,7 @@ module.exports={
         }
       },
 
-      deleteComment: async (req, res) => {
+    deleteComment: async (req, res) => {
         try {
           const { commentId } = req.params;
           const userId = req.user.user_id;
@@ -73,7 +73,8 @@ module.exports={
           if (comment.user.toString() !== userId) {
             return res.status(403).json({ error: 'You are not authorized to delete this comment' });
           }
-      
+          
+          // idk if this is necessary
           const event = await Event.findById(comment.event);
           if (!event || !event.isPublished) {
             return res.status(403).json({ error: 'Cannot delete a comment for a canceled or non-existing event' });
@@ -90,5 +91,45 @@ module.exports={
           return res.status(500).json({ error: 'Internal Server Error while deleting comment' });
         }
       },
+
+      updateComment: async (req, res) => {
+        try {
+          const { commentId } = req.params;
+          const userId = req.user.user_id;
+          
+             const validationResult = validateComment(req.body);
+
+            if (validationResult.error) {
+            // Validation failed, handle the error with custom messages
+            const errorMessages = validationResult.error.details.map(
+                (error) => error.message
+            );
+            return res.status(400).json({ errors: errorMessages });
+            }
+            
+            const {content} =validationResult.value
+          const comment = await Comment.findById(commentId);
+          if (!comment) {
+            return res.status(404).json({ error: 'Comment not found' });
+          }
+      
+          if (comment.user.toString() !== userId) {
+            return res.status(403).json({ error: 'You are not authorized to update this comment' });
+          }
+      
+          const event = await Event.findById(comment.event);
+          if (!event || !event.isPublished) {
+            return res.status(403).json({ error: 'Cannot update a comment for a canceled or non-existing event' });
+          }
+      
+          comment.content = content;
+          await comment.save();
+      
+          return res.status(200).json({ message: 'Comment updated successfully', comment });
+        } catch (error) {
+          console.error('Error updating comment:', error);
+          return res.status(500).json({ error: 'Internal Server Error while updating comment' });
+        }
+      },  
       
 }

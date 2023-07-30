@@ -210,8 +210,7 @@ module.exports={
             <p>Best regards, 👋</p>
             <p>The <span class="highlight">Cigkoftes</span> Team 🌟</p>
             <div style="text-align: center;">
-                <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150">
-        </div>
+             <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150" style="border-radius: 20px;">        </div>
           </div>
           <div class="signature">
             <p>Make memories and have fun! 🎊</p>
@@ -319,8 +318,7 @@ module.exports={
                 <p>Best regards, 👋</p>
                 <p>The <strong>Cigkoftes</strong> Team 🌟</p>
                 <div style="text-align: center;">
-                     <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150">
-                </div>
+                     <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150" style="border-radius: 20px;">                </div>
               </div>
               <div class="signature">
                 <p>Take care and have a great day! 🌞</p>
