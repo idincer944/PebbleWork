@@ -9,6 +9,14 @@ module.exports = {
       const events = await Event.find({}).populate({
         path: 'participants',
         select: 'username avatar',
+      }).populate({
+        path: 'comments',
+        select: 'user content -_id createdAt',
+        populate: {
+          path: 'user',
+          select: 'username avatar -_id',
+        },
+        options: { virtuals: true }, 
       });
       res.status(200).send(events);
     } catch (error) {
@@ -25,6 +33,15 @@ module.exports = {
       const userEvents = await Event.find({ createdBy: userId }).populate({
         path: 'createdBy',
         select: '-_id firstname lastname avatar',
+      })
+      .populate({
+        path: 'comments',
+        select: 'user content -_id createdAt',
+        populate: {
+          path: 'user',
+          select: 'username avatar -_id',
+        },
+        options: { virtuals: true }, 
       });
 
       res.status(200).json(userEvents);
@@ -74,7 +91,15 @@ module.exports = {
 
     try {
  
-      const event = await Event.findById(eventId)
+      const event = await Event.findById(eventId).populate({
+        path: 'comments',
+        select: 'user content -_id createdAt',
+        populate: {
+          path: 'user',
+          select: 'username avatar -_id',
+        },
+        options: { virtuals: true }, // Add this line to flatten the nested user object
+      });
 
       if (!event) {
         return res.status(404).json({ error: 'Event not found' });
@@ -131,7 +156,15 @@ module.exports = {
     const userId = req.user.user_id;
 
     try {
-      const event = await Event.findById(eventId);
+      const event = await Event.findById(eventId).populate({
+        path: 'comments',
+        select: 'user content -_id createdAt',
+        populate: {
+          path: 'user',
+          select: 'username avatar -_id',
+        },
+        options: { virtuals: true }, // Add this line to flatten the nested user object
+      });
       if (event.createdBy != userId) {
         return res
           .status(403)

@@ -50,7 +50,7 @@ module.exports = {
           res.status(201).json({message:`Hello ${user.firstname}, appearntly you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`});
       }
      
-       res.redirect('/event/getallevents'); 
+      res.status(200).json({message:`Hello ${user.firstname}, Wellcome🌟`}); 
     } catch (err) {
       console.log(err);
     }

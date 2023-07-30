@@ -146,4 +146,22 @@ function validateUser(user) {
   return validationSchema.validate(user, { abortEarly: false });
 }
 
-module.exports = { validateEvent, validateUser };
+function validateComment(comment) {
+
+  const validationSchema = Joi.object({
+    content: Joi.string()
+      .min(1)
+      .max(500)
+      .required()
+      .messages({
+        'string.base': 'Content must be a string',
+        'string.empty': 'Content cannot be empty',
+        'string.min': 'Content must have at least {#limit} character',
+        'string.max': 'Content can have at most {#limit} characters',
+        'any.required': 'Content is required',
+      }),
+  });
+  return validationSchema.validate(comment, { abortEarly: false });
+}
+
+module.exports = { validateEvent, validateUser ,validateComment};

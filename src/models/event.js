@@ -65,6 +65,14 @@ const eventSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  allowComments: {
+    type: Boolean,
+    default: true,
+  },
+  comments:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref : 'Comment'
+  }]
 });
 
 module.exports = mongoose.model('Event', eventSchema);
