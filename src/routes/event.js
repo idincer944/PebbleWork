@@ -4,6 +4,8 @@ const router = express.Router();
 
 const eventController = require('../controllers/eventController');
 const commentController = require('../controllers/commentController');
+const likeController = require('../controllers/likeController');
+
 
 router.get('/getAllEvents', eventController.getAllEvents);
 router.get('/createdEvents', authenticate(), eventController.getAllUserEvents);
@@ -22,4 +24,7 @@ router.post('/addComment/:eventId', authenticate(), commentController.addComment
 router.delete('/deleteComment/:commentId', authenticate(), commentController.deleteComment);
 router.put('/updateComment/:commentId', authenticate(), commentController.updateComment);
 
+
+//likes
+router.post('/likeEvent/:eventId', authenticate(), likeController.likeEvent);
 module.exports = router;

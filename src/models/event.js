@@ -72,7 +72,13 @@ const eventSchema = new mongoose.Schema({
   comments:[{
     type: mongoose.Schema.Types.ObjectId,
     ref : 'Comment'
-  }]
+  }],
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Like',
+    },
+  ]
 });
 
 module.exports = mongoose.model('Event', eventSchema);
