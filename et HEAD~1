@@ -1,0 +1,69 @@
+[33mcommit 19c3c8fa68a3e29328b8896efa9b0b48e72cebad[m[33m ([m[1;36mHEAD -> [m[1;32msaidbaradai/issue24[m[33m)[m
+Author: said baradai <saitbaradai@gmail.com>
+Date:   Wed Jul 19 21:05:22 2023 +0300
+
+    Add : update, search functions & use : user infos from the cookies
+
+[33mcommit fcb0b407702036ceced1fd091961f10e36eb8576[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: 3221783 c6579d6
+Author: said baradai <73998098+saidbaradai@users.noreply.github.com>
+Date:   Wed Jul 19 16:51:59 2023 +0300
+
+    Merge pull request #30 from idincer944/idincer944/issue28
+    
+    Fixes store JWT in a cookie and use cookie in auth
+
+[33mcommit c6579d6871035b70abae02cad11c84e5984fc1a3[m[33m ([m[1;31morigin/idincer944/issue28[m[33m)[m
+Author: İsmail <idincer944@gmail.com>
+Date:   Mon Jul 17 19:45:55 2023 +0300
+
+    Fixes store JWT in a cookie and use cookie in auth
+
+[33mcommit 3221783033ffb45224677906cacce9e81a3fd70d[m
+Author: Ilayda Nur Guzel <122798694+ilaydanurguzel1@users.noreply.github.com>
+Date:   Fri Jul 14 15:34:29 2023 +0300
+
+    middleware-auth.js (#27)
+
+[33mcommit 431911dc81e2f631e0ced5876791cb09a9ee36a9[m
+Author: İsmail Dincer <113365861+idincer944@users.noreply.github.com>
+Date:   Thu Jul 13 19:00:14 2023 +0300
+
+    Idincer944/issue25 (#26)
+    
+    * add jwt to singIn and signUp
+    
+    * send verification email half done
+    
+    * finished verification email and user routes
+
+[33mcommit 1a329b1b7afd92b884100df732c4feea2344081b[m
+Author: said baradai <73998098+saidbaradai@users.noreply.github.com>
+Date:   Mon Jul 10 23:37:48 2023 +0300
+
+    restructuring the project closes fixes #20 (#22)
+    
+    * restructe the project
+    
+    * restructe the project
+
+[33mcommit e65a57e3aba634df7898445f343bdffe4c903c19[m
+Merge: c0bd964 2536978
+Author: said baradai <73998098+saidbaradai@users.noreply.github.com>
+Date:   Sat Jul 8 17:39:01 2023 +0300
+
+    Merge pull request #17 from idincer944/saidbaradai/issue1
+    
+    add : event model closes #1
+
+[33mcommit 25369784b4c8dc39af2f883ed3b8695e5e072dbb[m[33m ([m[1;31morigin/saidbaradai/issue1[m[33m)[m
+Author: said baradai <saitbaradai@gmail.com>
+Date:   Sat Jul 8 17:20:14 2023 +0300
+
+    add : event model
+
+[33mcommit c0bd964e970ad6ca8ce2e3cafe3030e81f9b74c0[m
+Author: İsmail <idincer944@gmail.com>
+Date:   Fri Jul 7 23:24:13 2023 +0300
+
+    package-lock.json updated
