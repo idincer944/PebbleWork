@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { validateUser } = require('../utils/validations');
+const {validateUser} = require('../utils/validations');
 const mailFunctions = require('../utils/mailing/mail-functions');
 module.exports = {
   getAllUsers: async (req, res) => {
@@ -17,7 +17,7 @@ module.exports = {
 
   signIn: async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { username, password, rememberMe } = req.body;
       const user = await User.findOne({ username });
       if (!user) {
         return res.status(400).json({ error: 'Wrong username or password' });
@@ -28,32 +28,28 @@ module.exports = {
         return res.status(400).json({ error: 'Wrong username or password' });
       }
 
-      // create token
-      const token = jwt.sign(
-        { user_id: user._id, email: user.email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: '2h',
-        }
-      );
-      // save user token in a cookie
+      const expiresIn = rememberMe ? '7d' : '2h';
+      const token = jwt.sign({ user_id: user._id, email: user.email }, process.env.TOKEN_KEY, {
+        expiresIn,
+      });
+  
+      // Save user token in a cookie
       res.cookie('token', token, {
         httpOnly: true,
         secure: false, // true for https
         sameSite: 'strict',
-        maxAge: 2 * 60 * 60 * 1000,
+        maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000,
       });
 
       // RESENDING THE LINK
-      if (!user.is_verified) {
-        const link = `http://localhost:3000/user/verify`;
-        mailFunctions.sendVerificationEmail(user.email, link, username);
-        res.status(201).json({
-          message: `Hello ${user.firstname}, appearntly you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`,
-        });
+      if (!user.is_verified) 
+      {
+          const link = `http://localhost:3000/user/verify`;
+          mailFunctions.sendVerificationEmail(user.email, link,username);
+          res.status(201).json({message:`Hello ${user.firstname}, apparently you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`});
       }
-
-      res.status(200).json({ message: `Hello ${user.firstname}, Wellcome🌟` });
+     
+       res.redirect('/events'); 
     } catch (err) {
       console.log(err);
     }
@@ -106,27 +102,25 @@ module.exports = {
         password_hash,
         avatar,
       });
-      // Create token
-      const token = jwt.sign(
-        { user_id: user._id, email: user.email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: '2h',
-        }
-      );
-      // save user token in a cookie
+
+      const expiresIn = rememberMe ? '7d' : '2h';
+      const token = jwt.sign({ user_id: user._id, email: user.email }, process.env.TOKEN_KEY, {
+        expiresIn,
+      });
+  
+      // Save user token in a cookie
       res.cookie('token', token, {
         httpOnly: true,
         secure: false, // true for https
         sameSite: 'strict',
-        maxAge: 2 * 60 * 60 * 1000,
+        maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000,
       });
-      const link = `http://localhost:3000/user/verify`;
-      mailFunctions.sendVerificationEmail(user.email, link, username);
 
-      res.status(201).json({
-        message: `Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`,
-      });
+      const link = `http://localhost:3000/user/verify`;
+      mailFunctions.sendVerificationEmail(user.email, link,username);
+    
+      res.status(201).json({message:`Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`});
+      
     } catch (err) {
       console.log(err);
     }
@@ -144,6 +138,34 @@ module.exports = {
     }
   },
 
+  getProfile: async (req, res) => {
+    try {
+      const token = req.cookies.token;
+      if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+      const user = await User.findById(decoded.user_id).select("fullName email username avatar -_id");
+      return res.json(user);
+    }
+     catch (error) {
+      res
+      .status(500)
+      .json(error);
+    }
+  },
+
+  getUserById: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id).select("fullName email username avatar -_id");
+      res.status(200).json(user);
+    } catch (error) {
+      res
+      .status(500)
+      .json({ error: 'Internal Server Error while getting user' });
+    }
+  },
+
   verifyEmail: async (req, res) => {
     try {
       // Getting the token from cookies because it is more secure this way.
@@ -152,12 +174,11 @@ module.exports = {
       const user = await User.findByIdAndUpdate(decoded.user_id, {
         is_verified: true,
       });
-      res.status(201).json({
-        message: `Congratulations! ${user.firstname} 🎉 Your email has been successfully verified. Welcome to our community! 🌟`,
-      }); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
+      res.status(201).json({message:`Congratulations! ${user.firstname} 🎉 Your email has been successfully verified. Welcome to our community! 🌟`}); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
     } catch (error) {
-      console.log(error);
-      res.json(error);
+      res
+      .status(500)
+      .json(error);
     }
   },
 

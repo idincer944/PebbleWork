@@ -42,6 +42,10 @@ const userSchema = mongoose.Schema({
   },
 });
 
+userSchema.virtual('fullName').get(function () {
+  return this.firstname + ' ' + this.lastname;
+});
+
 userSchema.pre('validate', function (next) {
   // slugify username
   this.username = slugify(

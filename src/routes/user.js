@@ -9,8 +9,7 @@ router.post('/signup', userController.signUp);
 router.delete('/:id', authenticate, isAdmin, userController.deleteUser);
 router.get('/verify', userController.verifyEmail);
 router.get('/signout', authenticate, userController.signOut);
-
-//router.get('/profile', userController.getProfile);
-//router.get('/:id', userController.getUserById);
+router.get('/profile', authenticate, userController.getProfile);
+router.get('/:id', userController.getUserById);
 
 module.exports = router;
