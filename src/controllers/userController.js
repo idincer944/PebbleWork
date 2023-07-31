@@ -2,8 +2,8 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const EmailValidator = require('email-validator');
 const jwt = require('jsonwebtoken');
-//const sendMail = require('../utils/mailing/send-mail');
-const {validateUser} = require('../utils/validations');
+// const sendMail = require('../utils/mailing/send-mail');
+const { validateUser } = require('../utils/validations');
 const mailFunctions = require('../utils/mailing/mail-functions');
 module.exports = {
   getAllUsers: async (req, res) => {
@@ -31,9 +31,13 @@ module.exports = {
       }
 
       // create token
-      const token = jwt.sign({ user_id: user._id,email:user.email }, process.env.TOKEN_KEY, {
-        expiresIn: '2h',
-      });
+      const token = jwt.sign(
+        { user_id: user._id, email: user.email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: '2h',
+        }
+      );
       // save user token in a cookie
       res.cookie('token', token, {
         httpOnly: true,
@@ -43,14 +47,15 @@ module.exports = {
       });
 
       // RESENDING THE LINK
-      if (!user.is_verified) 
-      {
-          const link = `http://localhost:3000/user/verify/${token}`;
-          mailFunctions.sendVerificationEmail(user.email, link,username);
-          res.status(201).json({message:`Hello ${user.firstname}, appearntly you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`});
+      if (!user.is_verified) {
+        const link = `http://localhost:3000/user/verify/${token}`;
+        mailFunctions.sendVerificationEmail(user.email, link, username);
+        res.status(201).json({
+          message: `Hello ${user.firstname}, appearntly you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`,
+        });
       }
-     
-      res.status(200).json({message:`Hello ${user.firstname}, Wellcome🌟`}); 
+
+      res.status(200).json({ message: `Hello ${user.firstname}, Wellcome🌟` });
     } catch (err) {
       console.log(err);
     }
@@ -105,7 +110,7 @@ module.exports = {
       });
       // Create token
       const token = jwt.sign(
-        { user_id: user._id,email:user.email  },
+        { user_id: user._id, email: user.email },
         process.env.TOKEN_KEY,
         {
           expiresIn: '2h',
@@ -119,10 +124,11 @@ module.exports = {
         maxAge: 2 * 60 * 60 * 1000,
       });
       const link = `http://localhost:3000/user/verify/${token}`;
-      mailFunctions.sendVerificationEmail(user.email, link,username);
-    
-      res.status(201).json({message:`Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`});
-      
+      mailFunctions.sendVerificationEmail(user.email, link, username);
+
+      res.status(201).json({
+        message: `Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -159,15 +165,15 @@ module.exports = {
       const user = await User.findByIdAndUpdate(decoded.user_id, {
         is_verified: true,
       });
-      res.status(201).json({message:`Congratulations! ${user.firstname} 🎉 Your email has been successfully verified. Welcome to our community! 🌟`}); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
+      res.status(201).json({
+        message: `Congratulations! ${user.firstname} 🎉 Your email has been successfully verified. Welcome to our community! 🌟`,
+      }); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
     } catch (error) {
       res.json(error);
     }
   },
 
-  reSendEmail :async (req,res) =>{
-
-  },
+  reSendEmail: async (req, res) => {},
   deleteUser: async (req, res) => {
     try {
       const userId = req.params.id;

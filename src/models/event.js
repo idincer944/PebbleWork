@@ -59,7 +59,7 @@ const eventSchema = new mongoose.Schema({
   },
   eventWebsite: {
     type: String,
-    required:false,
+    required: false,
   },
   isPublished: {
     type: Boolean,
@@ -69,16 +69,18 @@ const eventSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  comments:[{
-    type: mongoose.Schema.Types.ObjectId,
-    ref : 'Comment'
-  }],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment',
+    },
+  ],
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Like',
     },
-  ]
+  ],
 });
 
 module.exports = mongoose.model('Event', eventSchema);

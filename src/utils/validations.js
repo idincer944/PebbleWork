@@ -70,13 +70,16 @@ function validateEvent(Event) {
     }),
     registrationDeadline: Joi.date().min(new Date()).required().messages({
       'string.base': 'Registration deadline must be a string',
-      'string.isoDate': 'Registration deadline must be a valid ISO date (e.g., "2023-08-09T15:00:00Z")',
-      'date.min': 'Registration deadline cannot be before the current date and time',
+      'string.isoDate':
+        'Registration deadline must be a valid ISO date (e.g., "2023-08-09T15:00:00Z")',
+      'date.min':
+        'Registration deadline cannot be before the current date and time',
       'any.required': 'Registration deadline is required',
     }),
     eventWebsite: Joi.string().uri().messages({
       'string.base': 'Event website must be a string',
-      'string.uri': 'Event website must be a valid URI (e.g., "https://example.com/event")',
+      'string.uri':
+        'Event website must be a valid URI (e.g., "https://example.com/event")',
     }),
     isPublished: Joi.boolean().required().messages({
       'boolean.base': 'IsPublished must be a boolean',
@@ -147,21 +150,16 @@ function validateUser(user) {
 }
 
 function validateComment(comment) {
-
   const validationSchema = Joi.object({
-    content: Joi.string()
-      .min(1)
-      .max(500)
-      .required()
-      .messages({
-        'string.base': 'Content must be a string',
-        'string.empty': 'Content cannot be empty',
-        'string.min': 'Content must have at least {#limit} character',
-        'string.max': 'Content can have at most {#limit} characters',
-        'any.required': 'Content is required',
-      }),
+    content: Joi.string().min(1).max(500).required().messages({
+      'string.base': 'Content must be a string',
+      'string.empty': 'Content cannot be empty',
+      'string.min': 'Content must have at least {#limit} character',
+      'string.max': 'Content can have at most {#limit} characters',
+      'any.required': 'Content is required',
+    }),
   });
   return validationSchema.validate(comment, { abortEarly: false });
 }
 
-module.exports = { validateEvent, validateUser ,validateComment};
+module.exports = { validateEvent, validateUser, validateComment };

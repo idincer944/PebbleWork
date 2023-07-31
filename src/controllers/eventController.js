@@ -1,23 +1,25 @@
 const Event = require('../models/event');
-//const jwt = require('jsonwebtoken');
-const {validateEvent} = require('../utils/validations');
+// const jwt = require('jsonwebtoken');
+const { validateEvent } = require('../utils/validations');
 const mailFunctions = require('../utils/mailing/mail-functions');
 
 module.exports = {
   getAllEvents: async (req, res) => {
     try {
-      const events = await Event.find({}).populate({
-        path: 'participants',
-        select: 'username avatar',
-      }).populate({
-        path: 'comments',
-        select: 'user content -_id createdAt',
-        populate: {
-          path: 'user',
-          select: 'username avatar -_id',
-        },
-        options: { virtuals: true }, 
-      });
+      const events = await Event.find({})
+        .populate({
+          path: 'participants',
+          select: 'username avatar',
+        })
+        .populate({
+          path: 'comments',
+          select: 'user content -_id createdAt',
+          populate: {
+            path: 'user',
+            select: 'username avatar -_id',
+          },
+          options: { virtuals: true },
+        });
       res.status(200).send(events);
     } catch (error) {
       console.error(error);
@@ -30,19 +32,20 @@ module.exports = {
 
     try {
       // Find all events that were created by the user with the given ID
-      const userEvents = await Event.find({ createdBy: userId }).populate({
-        path: 'createdBy',
-        select: '-_id firstname lastname avatar',
-      })
-      .populate({
-        path: 'comments',
-        select: 'user content -_id createdAt',
-        populate: {
-          path: 'user',
-          select: 'username avatar -_id',
-        },
-        options: { virtuals: true }, 
-      });
+      const userEvents = await Event.find({ createdBy: userId })
+        .populate({
+          path: 'createdBy',
+          select: '-_id firstname lastname avatar',
+        })
+        .populate({
+          path: 'comments',
+          select: 'user content -_id createdAt',
+          populate: {
+            path: 'user',
+            select: 'username avatar -_id',
+          },
+          options: { virtuals: true },
+        });
 
       res.status(200).json(userEvents);
     } catch (error) {
@@ -62,7 +65,7 @@ module.exports = {
       return res.status(400).json({ errors: errorMessages });
     }
 
-    const { name, location, time, description, picture,category } =
+    const { name, location, time, description, picture, category } =
       validationResult.value;
 
     const createdBy = req.user.user_id;
@@ -90,7 +93,6 @@ module.exports = {
     const { eventId } = req.params;
 
     try {
- 
       const event = await Event.findById(eventId).populate({
         path: 'comments',
         select: 'user content -_id createdAt',
@@ -107,7 +109,7 @@ module.exports = {
 
       res.status(200).json(event);
     } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 
@@ -118,12 +120,10 @@ module.exports = {
 
     try {
       const event = await Event.findById(eventId);
-      if (event.createdBy != userId) {
-        return res
-          .status(403)
-          .json({
-            error: 'you are not allowed to cansle or delete this event',
-          });
+      if (event.createdBy !== userId) {
+        return res.status(403).json({
+          error: 'you are not allowed to cansle or delete this event',
+        });
       }
 
       if (!event) {
@@ -137,10 +137,10 @@ module.exports = {
       if (eventDate <= today) {
         return res.status(403).json({ error: "You can't cancle past events" });
       }
-      //res.status(200).json(event);
-       const eventToCancle = await Event.findById(eventId);
-       eventToCancle.isPublished=false
-       await eventToCancle.save()
+      // res.status(200).json(event);
+      const eventToCancle = await Event.findById(eventId);
+      eventToCancle.isPublished = false;
+      await eventToCancle.save();
       res.status(200).json({ message: 'Event cancled successfully' });
     } catch (error) {
       res
@@ -165,7 +165,7 @@ module.exports = {
         },
         options: { virtuals: true }, // Add this line to flatten the nested user object
       });
-      if (event.createdBy != userId) {
+      if (event.createdBy !== userId) {
         return res
           .status(403)
           .json({ error: 'you are not allowed to edit this event' });
@@ -180,9 +180,13 @@ module.exports = {
       event.time = eventData.time || event.time;
       event.description = eventData.description || event.description;
       event.picture = eventData.picture || event.picture;
-      event.maxParticipants = eventData.maxParticipants || event.maxParticipants;
-      event.isPublished = eventData.hasOwnProperty('isPublished')? eventData.isPublished: event.isPublished;
-      event.registrationDeadline = eventData.registrationDeadline || event.registrationDeadline;
+      event.maxParticipants =
+        eventData.maxParticipants || event.maxParticipants;
+      event.isPublished = eventData.hasOwnProperty('isPublished')
+        ? eventData.isPublished
+        : event.isPublished;
+      event.registrationDeadline =
+        eventData.registrationDeadline || event.registrationDeadline;
       event.eventWebsite = eventData.eventWebsite || event.eventWebsite;
 
       await event.save();
@@ -214,26 +218,19 @@ module.exports = {
     }
   },
 
-
-  filterhEvents : async (req, res) =>{
-    const {
-      searchQuery,
-      startDate,
-      endDate,
-      location,
-      category,
-    } = req.query;
+  filterhEvents: async (req, res) => {
+    const { searchQuery, startDate, endDate, location, category } = req.query;
 
     try {
-      const filter ={};
-  
+      const filter = {};
+
       if (searchQuery) {
         filter.$or = [
           { name: { $regex: searchQuery, $options: 'i' } },
           { description: { $regex: searchQuery, $options: 'i' } },
         ];
       }
-  
+
       if (startDate && endDate) {
         filter.time = { $gte: new Date(startDate), $lte: new Date(endDate) };
       } else if (startDate) {
@@ -241,24 +238,28 @@ module.exports = {
       } else if (endDate) {
         filter.time = { $lte: new Date(endDate) };
       }
-  
+
       if (location) {
         filter.location = location;
       }
-  
+
       if (category) {
         filter.category = category;
       }
-  
+
       const events = await Event.find(filter);
-      if(events.length===0){
-        res.status(404).json({ message: 'there is no events found with these filters'});
+      if (events.length === 0) {
+        res
+          .status(404)
+          .json({ message: 'there is no events found with these filters' });
       }
-  
+
       res.status(200).json({ message: 'Events found successfully', events });
     } catch (error) {
       console.error('Error filtering events:', error);
-      res.status(500).json({ error: 'Internal Server Error while searching events' });
+      res
+        .status(500)
+        .json({ error: 'Internal Server Error while searching events' });
     }
   },
 
@@ -267,7 +268,7 @@ module.exports = {
       const { eventId } = req.params;
 
       const userId = req.user.user_id;
-      
+
       const event = await Event.findById(eventId);
 
       if (!event) {
@@ -275,24 +276,24 @@ module.exports = {
       }
 
       if (!event.isPublished) {
-        return res
-        .status(403)
-        .json({ error: 'Event has been canceled, you cant join cancled event' });
+        return res.status(403).json({
+          error: 'Event has been canceled, you cant join cancled event',
+        });
       }
 
       if (event.participants.length >= event.maxParticipants) {
         return res
-        .status(409)
-        .json({ error: 'Event capacity has been reached.' });
+          .status(409)
+          .json({ error: 'Event capacity has been reached.' });
       }
-      
+
       const now = new Date();
-      if ( now > event.registrationDeadline) {
+      if (now > event.registrationDeadline) {
         return res
-        .status(409)
-        .json({ error: 'Registration deadline has passed.' });
+          .status(409)
+          .json({ error: 'Registration deadline has passed.' });
       }
-      
+
       if (event.participants.includes(userId)) {
         return res
           .status(409)
@@ -301,9 +302,12 @@ module.exports = {
       event.participants.push(userId);
 
       await event.save();
-      mailFunctions.sendJoinedEventEmail(req.user.email,event.name, event.time) 
+      mailFunctions.sendJoinedEventEmail(
+        req.user.email,
+        event.name,
+        event.time
+      );
       return res.status(200).json({ message: 'joined successfully' });
-      
     } catch (error) {
       return res
         .status(500)
@@ -335,7 +339,7 @@ module.exports = {
       );
 
       await event.save();
-      mailFunctions.sendLeftEventEmail(req.user.email,event.name,event.time)
+      mailFunctions.sendLeftEventEmail(req.user.email, event.name, event.time);
       return res.status(200).json({ message: 'Left the event successfully' });
     } catch (error) {
       return res

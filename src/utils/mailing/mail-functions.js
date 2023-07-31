@@ -1,11 +1,11 @@
-const sendEmail= require('./send-mail')
+const sendEmail = require('./send-mail');
 
-//add a new function with new htmlContent and call it from where ever you want.
+// add a new function with new htmlContent and call it from where ever you want.
 
-module.exports={
-    sendVerificationEmail : (to, link, username) => {
-        const subject = 'Verify your email';
-        const htmlContent =  `<head>
+module.exports = {
+  sendVerificationEmail: (to, link, username) => {
+    const subject = 'Verify your email';
+    const htmlContent = `<head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,12 +109,12 @@ module.exports={
           </div>
         </div>
       </body>`;
-        sendEmail(to, subject, htmlContent);
-      },
+    sendEmail(to, subject, htmlContent);
+  },
 
-    sendJoinedEventEmail  : (to, eventName, eventDate) => {
-        const subject = `Thank You for Joining ${eventName}`;
-        const htmlContent = `
+  sendJoinedEventEmail: (to, eventName, eventDate) => {
+    const subject = `Thank You for Joining ${eventName}`;
+    const htmlContent = `
         <head>
         <style>
           body {
@@ -219,11 +219,11 @@ module.exports={
       </body>
       
         `;
-        sendEmail(to, subject, htmlContent);
-      },
-    sendLeftEventEmail :(to, eventName, eventDate) => {
-        const subject = `Sorry to See You Go from ${eventName}`;
-        const htmlContent = `
+    sendEmail(to, subject, htmlContent);
+  },
+  sendLeftEventEmail: (to, eventName, eventDate) => {
+    const subject = `Sorry to See You Go from ${eventName}`;
+    const htmlContent = `
           <head>
             <style>
               body {
@@ -326,11 +326,17 @@ module.exports={
             </div>
           </body>
         `;
-        sendEmail(to, subject, htmlContent);
-      },
-      sendCommentNotificationEmail : (to,userName,eventName, content,eventDate)=> {
-        const subject = `new comment on ${eventName}`;
-        const htmlContent = `<body>
+    sendEmail(to, subject, htmlContent);
+  },
+  sendCommentNotificationEmail: (
+    to,
+    userName,
+    eventName,
+    content,
+    eventDate
+  ) => {
+    const subject = `new comment on ${eventName}`;
+    const htmlContent = `<body>
         <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; color: #333;">
           <div class="header" style="text-align: center;">
             <h1 style="color: #1a237e;">New Comment on <strong>${eventName}</strong> 💬</h1>
@@ -355,6 +361,6 @@ module.exports={
         </div>
       </body>
         `;
-        sendEmail(to, subject, htmlContent);
-      },
-}
+    sendEmail(to, subject, htmlContent);
+  },
+};

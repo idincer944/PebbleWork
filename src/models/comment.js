@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-//added comment in sepreat scheam due to the SOLID principles
+// added comment in sepreat scheam due to the SOLID principles
 // we can add another fields like imge,nested commnts, etc.
 const commentSchema = new mongoose.Schema({
   user: {
@@ -10,7 +10,7 @@ const commentSchema = new mongoose.Schema({
   },
   event: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Event', 
+    ref: 'Event',
     required: true,
   },
   content: {
@@ -23,4 +23,4 @@ const commentSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Comment',commentSchema)
+module.exports = mongoose.model('Comment', commentSchema);

@@ -1,16 +1,16 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const userRouter = require('./routes/user');
-const eventRouter = require('./routes/event');
-const connectToMongo = require('./db');
+
 const fs = require('fs');
 const path = require('path');
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const { swaggerDocument } = require('./server/swagger'); // Importing the Swagger file
+const { swaggerDocument } = require('./server/swagger.json'); // Importing the Swagger file
+const userRouter = require('./routes/user');
+const eventRouter = require('./routes/event');
 
+const connectToMongo = require('./db');
 const app = express();
 
 app.use(express.json());
