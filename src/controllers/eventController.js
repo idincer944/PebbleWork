@@ -113,17 +113,19 @@ module.exports = {
     }
   },
 
-  cancleEvent: async (req, res) => {
+  cancelEvent: async (req, res) => {
     const { eventId } = req.params;
 
     const userId = req.user.user_id;
 
     try {
       const event = await Event.findById(eventId);
-      if (event.createdBy !== userId) {
-        return res.status(403).json({
-          error: 'you are not allowed to cansle or delete this event',
-        });
+      if (event.createdBy != userId) {
+        return res
+          .status(403)
+          .json({
+            error: 'you are not allowed to cancel or delete this event',
+          });
       }
 
       if (!event) {
@@ -135,13 +137,13 @@ module.exports = {
 
       // compare event date with today's date
       if (eventDate <= today) {
-        return res.status(403).json({ error: "You can't cancle past events" });
+        return res.status(403).json({ error: "You can't cancel past events" });
       }
-      // res.status(200).json(event);
-      const eventToCancle = await Event.findById(eventId);
-      eventToCancle.isPublished = false;
-      await eventToCancle.save();
-      res.status(200).json({ message: 'Event cancled successfully' });
+      //res.status(200).json(event);
+       const eventToCancel = await Event.findById(eventId);
+       eventToCancel.isPublished=false
+       await eventToCancel.save()
+      res.status(200).json({ message: 'Event canceled successfully' });
     } catch (error) {
       res
         .status(500)
@@ -218,8 +220,15 @@ module.exports = {
     }
   },
 
-  filterhEvents: async (req, res) => {
-    const { searchQuery, startDate, endDate, location, category } = req.query;
+
+  filterEvents : async (req, res) =>{
+    const {
+      searchQuery,
+      startDate,
+      endDate,
+      location,
+      category,
+    } = req.query;
 
     try {
       const filter = {};
@@ -276,9 +285,9 @@ module.exports = {
       }
 
       if (!event.isPublished) {
-        return res.status(403).json({
-          error: 'Event has been canceled, you cant join cancled event',
-        });
+        return res
+        .status(403)
+        .json({ error: 'Event has been canceled, you cant join canceled event' });
       }
 
       if (event.participants.length >= event.maxParticipants) {
