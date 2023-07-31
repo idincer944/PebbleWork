@@ -27,4 +27,5 @@ router.put('/updateComment/:commentId', authenticate(), commentController.update
 
 //likes
 router.post('/likeEvent/:eventId', authenticate(), likeController.likeEvent);
+router.delete('/removeLikeEvent/:eventId', authenticate(), likeController.removeLikeEvent);
 module.exports = router;
