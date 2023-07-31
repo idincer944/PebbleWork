@@ -1,11 +1,11 @@
-const sendEmail= require('./send-mail')
+const sendEmail = require('./send-mail');
 
-//add a new function with new htmlContent and call it from where ever you want.
+// add a new function with new htmlContent and call it from where ever you want.
 
-module.exports={
-    sendVerificationEmail : (to, link, username) => {
-        const subject = 'Verify your email';
-        const htmlContent =  `<head>
+module.exports = {
+  sendVerificationEmail: (to, link, username) => {
+    const subject = 'Verify your email';
+    const htmlContent = `<head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,12 +109,12 @@ module.exports={
           </div>
         </div>
       </body>`;
-        sendEmail(to, subject, htmlContent);
-      },
+    sendEmail(to, subject, htmlContent);
+  },
 
-    sendJoinedEventEmail  : (to, eventName, eventDate) => {
-        const subject = `Thank You for Joining ${eventName}`;
-        const htmlContent = `
+  sendJoinedEventEmail: (to, eventName, eventDate) => {
+    const subject = `Thank You for Joining ${eventName}`;
+    const htmlContent = `
         <head>
         <style>
           body {
@@ -210,8 +210,7 @@ module.exports={
             <p>Best regards, 👋</p>
             <p>The <span class="highlight">Cigkoftes</span> Team 🌟</p>
             <div style="text-align: center;">
-                <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150">
-        </div>
+             <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150" style="border-radius: 20px;">        </div>
           </div>
           <div class="signature">
             <p>Make memories and have fun! 🎊</p>
@@ -220,11 +219,11 @@ module.exports={
       </body>
       
         `;
-        sendEmail(to, subject, htmlContent);
-      },
-    sendLeftEventEmail :(to, eventName, eventDate) => {
-        const subject = `Sorry to See You Go from ${eventName}`;
-        const htmlContent = `
+    sendEmail(to, subject, htmlContent);
+  },
+  sendLeftEventEmail: (to, eventName, eventDate) => {
+    const subject = `Sorry to See You Go from ${eventName}`;
+    const htmlContent = `
           <head>
             <style>
               body {
@@ -319,8 +318,7 @@ module.exports={
                 <p>Best regards, 👋</p>
                 <p>The <strong>Cigkoftes</strong> Team 🌟</p>
                 <div style="text-align: center;">
-                     <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150">
-                </div>
+                     <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" width="%100" height="150" style="border-radius: 20px;">                </div>
               </div>
               <div class="signature">
                 <p>Take care and have a great day! 🌞</p>
@@ -328,7 +326,41 @@ module.exports={
             </div>
           </body>
         `;
-        sendEmail(to, subject, htmlContent);
-      },
-      
-}
+    sendEmail(to, subject, htmlContent);
+  },
+  sendCommentNotificationEmail: (
+    to,
+    userName,
+    eventName,
+    content,
+    eventDate
+  ) => {
+    const subject = `new comment on ${eventName}`;
+    const htmlContent = `<body>
+        <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; color: #333;">
+          <div class="header" style="text-align: center;">
+            <h1 style="color: #1a237e;">New Comment on <strong>${eventName}</strong> 💬</h1>
+          </div>
+          <div class="content">
+            <p>Dear ${userName},</p>
+            <p style="margin-bottom: 15px;">We hope this email finds you well.</p>
+            <p>A new comment has been added to your event <strong>${eventName}</strong>, which is happening on <strong>${eventDate}</strong>.</p>
+            <p style="margin-top: 10px;"><strong>Comment:</strong></p>
+            <p style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;">${content}</p>
+          </div>
+          <div class="">
+            <p>Best regards, 👋</p>
+            <p>The <strong>Cigkoftes</strong> Team 🌟</p>
+            <div style="text-align: center;">
+              <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" style="max-width: 100%; height: auto; border-radius: 10px;">
+            </div>
+          </div>
+          <div class="signature">
+            <p>Take care and have a great day! 🌞</p>
+          </div>
+        </div>
+      </body>
+        `;
+    sendEmail(to, subject, htmlContent);
+  },
+};
