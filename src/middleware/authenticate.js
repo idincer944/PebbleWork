@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-
-require('../app')
-
+require('../app');
 
 exports.authenticate = (req, res, next) => {
   const token = req.cookies.token;
@@ -18,9 +16,9 @@ exports.authenticate = (req, res, next) => {
   } else {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-}
+};
 
-exports.isAdmin = async (req, res, next) => {  
+exports.isAdmin = async (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -29,7 +27,7 @@ exports.isAdmin = async (req, res, next) => {
 
   if (!user.is_admin) {
     return res.status(403).json({ error: 'Access Denied' });
-  } 
+  }
 
   next();
-}
+};

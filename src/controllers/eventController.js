@@ -121,11 +121,9 @@ module.exports = {
     try {
       const event = await Event.findById(eventId);
       if (event.createdBy != userId) {
-        return res
-          .status(403)
-          .json({
-            error: 'you are not allowed to cancel or delete this event',
-          });
+        return res.status(403).json({
+          error: 'you are not allowed to cancel or delete this event',
+        });
       }
 
       if (!event) {
@@ -140,9 +138,9 @@ module.exports = {
         return res.status(403).json({ error: "You can't cancel past events" });
       }
       //res.status(200).json(event);
-       const eventToCancel = await Event.findById(eventId);
-       eventToCancel.isPublished=false
-       await eventToCancel.save()
+      const eventToCancel = await Event.findById(eventId);
+      eventToCancel.isPublished = false;
+      await eventToCancel.save();
       res.status(200).json({ message: 'Event canceled successfully' });
     } catch (error) {
       res
@@ -220,15 +218,8 @@ module.exports = {
     }
   },
 
-
-  filterEvents : async (req, res) =>{
-    const {
-      searchQuery,
-      startDate,
-      endDate,
-      location,
-      category,
-    } = req.query;
+  filterEvents: async (req, res) => {
+    const { searchQuery, startDate, endDate, location, category } = req.query;
 
     try {
       const filter = {};
@@ -285,9 +276,9 @@ module.exports = {
       }
 
       if (!event.isPublished) {
-        return res
-        .status(403)
-        .json({ error: 'Event has been canceled, you cant join canceled event' });
+        return res.status(403).json({
+          error: 'Event has been canceled, you cant join canceled event',
+        });
       }
 
       if (event.participants.length >= event.maxParticipants) {

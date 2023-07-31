@@ -16,8 +16,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/user', userRouter);
-app.use('/event', eventRouter);
+app.use('/users', userRouter);
+app.use('/events', eventRouter);
 
 connectToMongo();
 
