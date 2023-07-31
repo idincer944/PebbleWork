@@ -45,7 +45,7 @@ module.exports = {
       // RESENDING THE LINK
       if (!user.is_verified) 
       {
-          const link = `http://localhost:3000/user/verify/${token}`;
+          const link = `http://localhost:3000/user/verify`;
           mailFunctions.sendVerificationEmail(user.email, link,username);
           res.status(201).json({message:`Hello ${user.firstname}, appearntly you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`});
       }
@@ -118,7 +118,7 @@ module.exports = {
         sameSite: 'strict',
         maxAge: 2 * 60 * 60 * 1000,
       });
-      const link = `http://localhost:3000/user/verify/${token}`;
+      const link = `http://localhost:3000/user/verify`;
       mailFunctions.sendVerificationEmail(user.email, link,username);
     
       res.status(201).json({message:`Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`});
@@ -152,15 +152,15 @@ module.exports = {
 
   verifyEmail: async (req, res) => {
     try {
-      /*getting it fom the params instead of cookies 
-      so we can verify the email from a diifernt browser.*/
-      const token = req.params.token;
+      // Getting the token from cookies because it is more secure this way.
+      const token = req.cookies.token;
       const decoded = jwt.verify(token, process.env.TOKEN_KEY);
       const user = await User.findByIdAndUpdate(decoded.user_id, {
         is_verified: true,
       });
       res.status(201).json({message:`Congratulations! ${user.firstname} 🎉 Your email has been successfully verified. Welcome to our community! 🌟`}); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
     } catch (error) {
+      console.log(error)
       res.json(error);
     }
   },
