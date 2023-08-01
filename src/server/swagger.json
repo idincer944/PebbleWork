@@ -3,9 +3,7 @@
     "/getAllUsers": {
       "get": {
         "summary": "Getting all users",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "operationId": "getUsers",
         "responses": {
           "200": {
@@ -17,9 +15,7 @@
     "/signin": {
       "post": {
         "summary": "Sign in the user",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "operationId": "signinUser",
         "parameters": [
           {
@@ -27,20 +23,18 @@
             "in": "query",
             "description": "The user name for login",
             "required": true
-            },
+          },
           {
             "name": "password",
             "in": "query",
             "description": "The password for login in clear text",
             "required": true
-            }
+          }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-
-          }
+              "schema": {}
             }
           }
         },
@@ -57,18 +51,16 @@
     "/signup": {
       "post": {
         "summary": "Sign up the user",
-        "tags": [
-        "User"
-        ],
+        "tags": ["User"],
         "operationId": "signupUser",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/User"
+              }
             }
           }
-        }
         },
         "responses": {
           "default": {
@@ -77,15 +69,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/User"
-              }
-            },
+                }
+              },
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/User"
+                }
               }
             }
-          }
-
           }
         }
       }
@@ -93,9 +84,7 @@
     "/deleteUser/{id}": {
       "delete": {
         "summary": "Deleting user by its ID",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "operationId": "deleteUser",
         "parameters": [
           {
@@ -103,7 +92,7 @@
             "in": "path",
             "description": "ID numbers that need to be considered for deleting",
             "required": true
-            }
+          }
         ],
         "responses": {
           "400": {
@@ -118,9 +107,7 @@
     "/verify": {
       "get": {
         "summary": "Verifying the user email",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "operationId": "verifyToken",
         "responses": {
           "201": {
@@ -139,9 +126,7 @@
     "/signout": {
       "get": {
         "summary": "Sign out the user",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "operationId": "signoutUser",
         "responses": {
           "default": {
@@ -151,13 +136,10 @@
       }
     },
 
-
     "/getAllEvents": {
       "get": {
         "summary": "Getting all events",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "getEvents",
         "responses": {
           "200": {
@@ -169,9 +151,7 @@
     "/createdEvents": {
       "get": {
         "summary": "Find all events that were created by the user with the given ID",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "getAllUserEvents",
         "parameters": [
           {
@@ -179,7 +159,7 @@
             "in": "path",
             "description": "User ID number that need to be considered for getting events",
             "required": true
-            }
+          }
         ],
         "responses": {
           "200": {
@@ -201,18 +181,16 @@
     "/createNewEvent": {
       "post": {
         "summary": "Creating new event",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "createNewEvent",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Event"
+              }
             }
           }
-        }
         },
         "responses": {
           "200": {
@@ -224,9 +202,7 @@
     "/getEventById/:eventId": {
       "get": {
         "summary": "Find event by its ID",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "getEventById",
         "parameters": [
           {
@@ -234,7 +210,7 @@
             "in": "path",
             "description": "ID numbers that need to be considered for getting an event",
             "required": true
-            }
+          }
         ],
         "responses": {
           "200": {
@@ -242,26 +218,24 @@
             "content": {
               "application/json": {
                 "schema": {
-                 "$ref": "#/components/schemas/Events"
+                  "$ref": "#/components/schemas/Events"
+                }
+              },
+              "400": {
+                "description": "Invalid status value"
+              },
+              "404": {
+                "description": "Event not found"
+              }
             }
-          },
-          "400": {
-            "description": "Invalid status value"
-          },
-          "404": {
-            "description": "Event not found"
           }
         }
       }
-    }
-    }
-  },
+    },
     "/deleteEvent/:eventId": {
       "delete": {
         "summary": "Deleting event",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "deleteEvent",
         "parameters": [
           {
@@ -269,21 +243,19 @@
             "in": "path",
             "description": "Event id to delete",
             "required": true
-            }
+          }
         ],
         "responses": {
           "400": {
             "description": "Invalid event value"
+          }
         }
       }
-    }
-  },
+    },
     "/updateEvent/:eventId": {
       "put": {
         "summary": "Update event",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "updateEvent",
         "parameters": [
           {
@@ -291,13 +263,13 @@
             "in": "path",
             "description": "ID of event that needs to be updated",
             "required": true
-            },
+          },
           {
             "name": "name",
             "in": "query",
             "description": "Name of event that needs to be updated",
             "required": false
-            }
+          }
         ],
         "responses": {
           "405": {
@@ -309,9 +281,7 @@
     "/searchEvents": {
       "get": {
         "summary": "Search event",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "searchEvents",
         "responses": {
           "default": {
@@ -323,9 +293,7 @@
     "/joinEvent/:eventId": {
       "post": {
         "summary": "Join event",
-        "tags": [
-          "Event"
-        ],
+        "tags": ["Event"],
         "operationId": "joinEvent",
         "parameters": [
           {
@@ -333,13 +301,13 @@
             "in": "path",
             "description": "ID of event that needs to be updated",
             "required": true
-            },
+          },
           {
             "name": "userId",
             "in": "path",
             "description": "User ID that checks already part of the event or not",
             "required": true
-            }
+          }
         ],
         "responses": {
           "default": {
@@ -348,7 +316,6 @@
         }
       }
     }
-    
   },
   "components": {
     "schemas": {
@@ -392,16 +359,16 @@
             "example": "It is an online event for people to get plugged in and charged up with climate action"
           },
           "picture": {
-              "type": "array",
+            "type": "array",
+            "xml": {
+              "wrapped": true
+            },
+            "items": {
+              "type": "string",
               "xml": {
-                "wrapped": true
-              },
-              "items": {
-                "type": "string",
-                "xml": {
-                  "name": "photoUrl"
-                }
+                "name": "photoUrl"
               }
+            }
           }
         }
       },
@@ -433,8 +400,7 @@
             "example": "12345"
           },
           "acceptTos": {
-              "type": "boolean"
-
+            "type": "boolean"
           }
         }
       },
@@ -486,4 +452,3 @@
     }
   }
 }
-
