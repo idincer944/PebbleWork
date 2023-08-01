@@ -229,5 +229,35 @@ module.exports = {
         .status(500)
         .json({ error: 'Internal Server Error while updating user' });
     }
-  }
+  },
+  changePassword: async (req, res) => {
+    try {
+      const token = req.cookies.token;
+      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+
+      // Retrieve the user from the database
+      const user = await User.findById(decoded.user_id);
+
+      // Check if the user exists
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Check if the provided old password matches the stored password
+      const { oldPassword, newPassword } = req.body;
+      const passwordMatch = await bcrypt.compare(oldPassword, user.password_hash);
+      if (!passwordMatch) {
+        return res.status(401).json({ error: 'Invalid old password' });
+      }
+
+      // Hash the new password and update it in the user document
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      user.password_hash = hashedNewPassword;
+      await user.save();
+
+      return res.status(200).json({ message: 'Password changed successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error while changing password' });
+    }
+  },
 };

@@ -12,6 +12,6 @@ router.get('/signout', authenticate, userController.signOut);
 router.get('/profile', authenticate, userController.getProfile);
 router.get('/:id', userController.getUserById);
 router.put('/profile', authenticate, userController.updateProfile);
-// router.put('/:id/change-password', authenticate, userController.changePassword);
+router.put('/change-password', authenticate, userController.changePassword);
 
 module.exports = router;
