@@ -102,10 +102,8 @@ module.exports = {
         password_hash,
         avatar,
       });
-
-      const expiresIn = rememberMe ? '7d' : '2h';
       const token = jwt.sign({ user_id: user._id, email: user.email }, process.env.TOKEN_KEY, {
-        expiresIn,
+        expiresIn: "2h",
       });
   
       // Save user token in a cookie
@@ -113,7 +111,7 @@ module.exports = {
         httpOnly: true,
         secure: false, // true for https
         sameSite: 'strict',
-        maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000,
+        maxAge: 2 * 60 * 60 * 1000,
       });
 
       const link = `http://localhost:3000/user/verify`;
@@ -145,8 +143,15 @@ module.exports = {
         return res.status(401).json({ error: 'Unauthorized' });
       }
       const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      const user = await User.findById(decoded.user_id).select("fullName email username avatar -_id");
-      return res.json(user);
+      const user = await User.findById(decoded.user_id)
+      
+      const response = {
+        fullName: user.fullName,
+        email: user.email,
+        username: user.username,
+        avatar: user.avatar,
+      }
+      return res.status(200).json(response);
     }
      catch (error) {
       res
@@ -157,8 +162,14 @@ module.exports = {
 
   getUserById: async (req, res) => {
     try {
-      const user = await User.findById(req.params.id).select("fullName email username avatar -_id");
-      res.status(200).json(user);
+      const user = await User.findById(req.params.id)
+      const response = {
+        fullName: user.fullName,
+        email: user.email,
+        username: user.username,
+        avatar: user.avatar,
+      }
+      res.status(200).json(response);
     } catch (error) {
       res
       .status(500)
@@ -193,4 +204,30 @@ module.exports = {
         .json({ error: 'Internal Server Error while deleting user' });
     }
   },
+  updateProfile: async (req, res) => {
+    try {
+      const token = req.cookies.token;
+      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+      const user = await User.findById(decoded.user_id);
+
+      if(!user) {
+        return res.status(401).json({ error: 'User not found' });
+      }
+
+      const {fullName, avatar} = req.body;
+
+      if(fullName) {
+        user.fullName = fullName;
+      }
+
+      if(avatar) {
+        user.avatar = avatar;
+      }
+      res.status(200).json(`User ${user.username} updated`);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: 'Internal Server Error while updating user' });
+    }
+  }
 };

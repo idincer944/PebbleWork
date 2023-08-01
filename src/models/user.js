@@ -40,10 +40,21 @@ const userSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
   },
-});
-
-userSchema.virtual('fullName').get(function () {
-  return this.firstname + ' ' + this.lastname;
+},
+{
+  virtuals: {
+    // Create a virtual property `fullName` with a getter and setter
+    fullName: {
+      get() { return `${this.firstname} ${this.lastname}`; },
+      set(v) {
+        // `v` is the value being set, so use the value to set
+        // `firstName` and `lastName`.
+        const firstname = v.substring(0, v.indexOf(' '));
+        const lastname = v.substring(v.indexOf(' ') + 1);
+        this.set({ firstname, lastname });
+      }
+    }
+  }
 });
 
 userSchema.pre('validate', function (next) {
@@ -58,5 +69,7 @@ userSchema.pre('validate', function (next) {
   );
   next();
 });
+
+userSchema.set('toJSON', { virtuals: true, getters: true, setters: true, _id: false });
 
 module.exports = mongoose.model('User', userSchema);
