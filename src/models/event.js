@@ -52,14 +52,14 @@ const eventSchema = new mongoose.Schema({
   },
   registrationDeadline: {
     type: Date,
-    default: function () {
+    default() {
       const oneDay = 24 * 60 * 60 * 1000; // One day in milliseconds
       return new Date(this.time.getTime() - oneDay);
     },
   },
   eventWebsite: {
     type: String,
-    required:false,
+    required: false,
   },
   isPublished: {
     type: Boolean,
