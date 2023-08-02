@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {validateUser} = require('../utils/validations');
+const { validateUser } = require('../utils/validations');
 const mailFunctions = require('../utils/mailing/mail-functions');
 module.exports = {
   getAllUsers: async (req, res) => {
@@ -29,10 +29,14 @@ module.exports = {
       }
 
       const expiresIn = rememberMe ? '7d' : '2h';
-      const token = jwt.sign({ user_id: user._id, email: user.email }, process.env.TOKEN_KEY, {
-        expiresIn,
-      });
-  
+      const token = jwt.sign(
+        { user_id: user._id, email: user.email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn,
+        }
+      );
+
       // Save user token in a cookie
       res.cookie('token', token, {
         httpOnly: true,
@@ -42,14 +46,17 @@ module.exports = {
       });
 
       // RESENDING THE LINK
-      if (!user.is_verified) 
-      {
-          const link = `http://localhost:3000/user/verify`;
-          mailFunctions.sendVerificationEmail(user.email, link,username);
-          res.status(201).json({message:`Hello ${user.firstname}, apparently you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`});
+      if (!user.is_verified) {
+        const link = `http://localhost:3000/user/verify`;
+        mailFunctions.sendVerificationEmail(user.email, link, username);
+        res
+          .status(201)
+          .json({
+            message: `Hello ${user.firstname}, apparently you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`,
+          });
       }
-     
-       res.redirect('/events'); 
+
+      res.redirect('/events');
     } catch (err) {
       console.log(err);
     }
@@ -92,6 +99,11 @@ module.exports = {
         return res.status(400).json({ error: 'Username already exists' }); //change json to render and add the route
       }
 
+      let user1 = await User.findOne({ email });
+      if (user1) {
+        return res.status(400).json({ error: 'Email already exists' }); //change json to render and add the route
+      }
+
       const password_hash = await bcrypt.hash(password, 10);
 
       user = await User.create({
@@ -102,10 +114,14 @@ module.exports = {
         password_hash,
         avatar,
       });
-      const token = jwt.sign({ user_id: user._id, email: user.email }, process.env.TOKEN_KEY, {
-        expiresIn: "2h",
-      });
-  
+      const token = jwt.sign(
+        { user_id: user._id, email: user.email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: '2h',
+        }
+      );
+
       // Save user token in a cookie
       res.cookie('token', token, {
         httpOnly: true,
@@ -115,10 +131,13 @@ module.exports = {
       });
 
       const link = `http://localhost:3000/user/verify`;
-      mailFunctions.sendVerificationEmail(user.email, link,username);
-    
-      res.status(201).json({message:`Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`});
-      
+      mailFunctions.sendVerificationEmail(user.email, link, username);
+
+      res
+        .status(201)
+        .json({
+          message: `Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`,
+        });
     } catch (err) {
       console.log(err);
     }
@@ -143,37 +162,34 @@ module.exports = {
         return res.status(401).json({ error: 'Unauthorized' });
       }
       const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      const user = await User.findById(decoded.user_id)
-      
+      const user = await User.findById(decoded.user_id);
+
       const response = {
         fullName: user.fullName,
         email: user.email,
         username: user.username,
         avatar: user.avatar,
-      }
+      };
       return res.status(200).json(response);
-    }
-     catch (error) {
-      res
-      .status(500)
-      .json(error);
+    } catch (error) {
+      res.status(500).json(error);
     }
   },
 
   getUserById: async (req, res) => {
     try {
-      const user = await User.findById(req.params.id)
+      const user = await User.findById(req.params.id);
       const response = {
         fullName: user.fullName,
         email: user.email,
         username: user.username,
         avatar: user.avatar,
-      }
+      };
       res.status(200).json(response);
     } catch (error) {
       res
-      .status(500)
-      .json({ error: 'Internal Server Error while getting user' });
+        .status(500)
+        .json({ error: 'Internal Server Error while getting user' });
     }
   },
 
@@ -185,11 +201,13 @@ module.exports = {
       const user = await User.findByIdAndUpdate(decoded.user_id, {
         is_verified: true,
       });
-      res.status(201).json({message:`Congratulations! ${user.firstname} 🎉 Your email has been successfully verified. Welcome to our community! 🌟`}); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
-    } catch (error) {
       res
-      .status(500)
-      .json(error);
+        .status(201)
+        .json({
+          message: `Congratulations! ${user.firstname} 🎉 Your email has been successfully verified. Welcome to our community! 🌟`,
+        }); // we can add congratulations message here instead of json user with a timer. After a couple of seconds it can go to signin page.
+    } catch (error) {
+      res.status(500).json(error);
     }
   },
 
@@ -210,19 +228,21 @@ module.exports = {
       const decoded = jwt.verify(token, process.env.TOKEN_KEY);
       const user = await User.findById(decoded.user_id);
 
-      if(!user) {
+      if (!user) {
         return res.status(401).json({ error: 'User not found' });
       }
 
-      const {fullName, avatar} = req.body;
+      const { fullName, avatar } = req.body;
 
-      if(fullName) {
+      if (fullName) {
         user.fullName = fullName;
       }
 
-      if(avatar) {
+      if (avatar) {
         user.avatar = avatar;
       }
+      await user.save();
+
       res.status(200).json(`User ${user.username} updated`);
     } catch (error) {
       res
@@ -244,20 +264,79 @@ module.exports = {
       }
 
       // Check if the provided old password matches the stored password
-      const { oldPassword, newPassword } = req.body;
-      const passwordMatch = await bcrypt.compare(oldPassword, user.password_hash);
+      const { oldPassword, newPassword1, newPassword2 } = req.body;
+
+      if (newPassword1 !== newPassword2) {
+        return res.status(400).json({ error: 'New passwords do not match' });
+      }
+
+      const passwordMatch = await bcrypt.compare(
+        oldPassword,
+        user.password_hash
+      );
+
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Invalid old password' });
       }
 
       // Hash the new password and update it in the user document
-      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      const hashedNewPassword = await bcrypt.hash(newPassword1, 10);
       user.password_hash = hashedNewPassword;
       await user.save();
 
       return res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error while changing password' });
+      res
+        .status(500)
+        .json({ error: 'Internal Server Error while changing password' });
+    }
+  },
+  forgotPassword: async (req, res) => {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(400).json({ error: 'User not found' });
+      }
+
+      // Generate a random reset token and create a JWT
+      const resetJwtToken = jwt.sign(
+        { user_id: user._id, email: user.email },
+        process.env.TOKEN_KEY,
+        { expiresIn: '1h' }
+      );
+
+      // Set the reset JWT token as a cookie with an expiration time
+      res.cookie('resetToken', resetJwtToken, {
+        httpOnly: true,
+        secure: false, // true for https
+        sameSite: 'strict',
+        maxAge: 3600000, // Reset token valid for 1 hour
+      });
+      // Generate a randomized temporary password
+      const temporaryPassword = Math.random().toString(36).slice(-8); // Generate an 8-character temporary password
+
+      // Hash the temporary password
+      const hashedTemporaryPassword = await bcrypt.hash(temporaryPassword, 10);
+
+      // Update the user's password with the temporary password
+      user.password_hash = hashedTemporaryPassword;
+      await user.save();
+
+      // Send email with reset link, which can be a link to your frontend reset password page
+      const resetLink = `http://localhost:3000/users/signin`;
+      mailFunctions.sendTemporaryPasswordEmail(
+        user.email,
+        resetLink,
+        user.username,
+        temporaryPassword
+      );
+
+      res.status(200).json({ message: 'Reset link sent to your email' });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 };
