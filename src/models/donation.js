@@ -7,7 +7,8 @@ const donationSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    required: true,
+    enum: ['USD', 'TRY'],
+    required: false,
   },
   date: {
     type: Date,
@@ -15,7 +16,8 @@ const donationSchema = new mongoose.Schema({
   },
   currency: {
     type: String,
-    required: 'TRY',
+    enum: ['USD', 'TRY'],
+    required: true,
   },
   message: {
     type: String,
@@ -32,10 +34,6 @@ const donationSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  isAnonymous: {
-    type: Boolean,
-    default: false,
-  },
   billingAddress: {
     street: String,
     city: String,
@@ -45,16 +43,11 @@ const donationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: [
-        'pending',
-        'completed',
-        'failed',
-    ],
+    enum: ['pending', 'completed', 'failed'],
     default: 'pending',
   },
 });
 
 module.exports = mongoose.model('Donation', donationSchema);
 
-// transactionId: A field to store the transaction ID associated with the donation. This might be provided by the payment processor or gateway.
 // donationStatus: A field to track the status of the donation. It uses an enumeration to limit the values to 'pending', 'completed', or 'failed'. The default status is 'pending', assuming that the donation is pending until it is processed.

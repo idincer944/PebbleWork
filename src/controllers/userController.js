@@ -1,8 +1,9 @@
-const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const { validateUser } = require('../utils/validations');
 const mailFunctions = require('../utils/mailing/mail-functions');
+
 module.exports = {
   getAllUsers: async (req, res) => {
     try {
@@ -82,18 +83,18 @@ module.exports = {
       } = validationResult.value;
 
       if (password !== password2) {
-        return res.status(400).json({ error: 'Passwords do not match' }); //change json to render and add the route
+        return res.status(400).json({ error: 'Passwords do not match' }); // change json to render and add the route
       }
 
       if (!acceptTos) {
         return res
           .status(400)
-          .json({ error: 'You must accept the Terms of Service' }); //change json to render and add the route
+          .json({ error: 'You must accept the Terms of Service' }); // change json to render and add the route
       }
 
       let user = await User.findOne({ username });
       if (user) {
-        return res.status(400).json({ error: 'Username already exists' }); //change json to render and add the route
+        return res.status(400).json({ error: 'Username already exists' }); // change json to render and add the route
       }
 
       const password_hash = await bcrypt.hash(password, 10);
@@ -147,7 +148,7 @@ module.exports = {
   verifyEmail: async (req, res) => {
     try {
       // Getting the token from cookies because it is more secure this way.
-      const token = req.cookies.token;
+      const { token } = req.cookies;
       const decoded = jwt.verify(token, process.env.TOKEN_KEY);
       const user = await User.findByIdAndUpdate(decoded.user_id, {
         is_verified: true,
