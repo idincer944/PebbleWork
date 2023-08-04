@@ -1,23 +1,23 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const userRouter = require('./routes/user');
-const eventRouter = require('./routes/event');
-const connectToMongo = require('./db');
+
 const fs = require('fs');
 const path = require('path');
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const { swaggerDocument } = require('./server/swagger'); // Importing the Swagger file
+const { swaggerDocument } = require('./server/swagger.json'); // Importing the Swagger file
+const userRouter = require('./routes/user');
+const eventRouter = require('./routes/event');
 
+const connectToMongo = require('./db');
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/user', userRouter);
-app.use('/event', eventRouter);
+app.use('/users', userRouter);
+app.use('/events', eventRouter);
 
 connectToMongo();
 
@@ -32,14 +32,15 @@ let swaggerSpec = {
   info: {
     title: 'Express API with Swagger',
     version: '1.0.0',
-    description: 'This is a simple API application made with Express and documented with Swagger',
-    license: { name: 'MIT', url: 'https://spdx.org/licenses/MIT.html' }
+    description:
+      'This is a simple API application made with Express and documented with Swagger',
+    license: { name: 'MIT', url: 'https://spdx.org/licenses/MIT.html' },
   },
   servers: [{ url: 'http://localhost:3000/api-docs' }],
   paths: {},
   components: {},
   tags: [],
-  apis: ["./routes/user.js"],
+  apis: ['./routes/user.js'],
 };
 
 const filePath = path.join(__dirname, './server/swagger.json');
@@ -54,15 +55,19 @@ fs.readFile(filePath, 'utf8', (err, data) => {
 
     Object.assign(swaggerSpec, swaggerDocument);
 
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-
+    app.use(
+      '/api-docs',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerSpec, { explorer: true })
+    );
   } catch (parseError) {
     console.error('Error parsing the Swagger JSON data:', parseError);
   }
-  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
 
 module.exports = app;
