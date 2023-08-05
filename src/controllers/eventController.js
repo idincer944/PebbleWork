@@ -1,3 +1,6 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable eqeqeq */
+/* eslint-disable consistent-return */
 const Event = require('../models/event');
 // const jwt = require('jsonwebtoken');
 const { validateEvent } = require('../utils/validations');

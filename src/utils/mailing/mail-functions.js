@@ -392,4 +392,110 @@ module.exports = {
         `;
     sendEmail(to, subject, htmlContent);
   },
+
+  sendTemporaryPasswordEmail: (to, link, username, temporaryPassword) => {
+    const subject = 'Here is your temporary password';
+    const htmlContent = `<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Email Verification</title>
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+          }
+      
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          }
+      
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+          }
+      
+          .header h1 {
+            color: #007BFF;
+            font-size: 28px;
+            margin: 0;
+          }
+      
+          .button {
+            display: inline-block;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            padding: 14px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.2s ease-in-out;
+          }
+      
+          .button:hover {
+            background-color: #0056b3;
+          }
+      
+          .instructions {
+            text-align: center;
+            margin-top: 30px;
+          }
+      
+          .instructions p {
+            font-size: 16px;
+            margin: 10px 0;
+          }
+      
+          .closing {
+            text-align: center;
+            margin-top: 40px;
+          }
+      
+          .closing p {
+            font-size: 18px;
+            margin: 10px 0;
+          }
+      
+          .signature {
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+          }
+        </style>
+      </head>
+      
+      <body>
+      <div class="container">
+        <div class="header">
+          <h1>Here is your temporary password! 🎉</h1>
+        </div>
+        <div class="content">
+          <p>Dear <strong>${username}</strong>,</p>
+          <p>Your temporary password is:</p>
+          <p><strong>${temporaryPassword}</strong></p>
+          <p>Please use this temporary password to log in to your account. After signing-in, you can navigate to the 'Change Password' page to set a new password of your choice.</p>
+          <p>Click here to sign-in:<p>
+          <p>${link}<p>
+          <div class="closing">
+            <p>Thank you for joining us! 💙</p>
+            <p>Best regards, 👋</p>
+            <p>Cigkoftes team 🌟</p>
+          </div>
+          <div class="signature">
+            <p>Make the world a better place 🔥</p>
+          </div>
+        </div>
+      </div>
+    </body>`;
+    sendEmail(to, subject, htmlContent);
+  },
 };
