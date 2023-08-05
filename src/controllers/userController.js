@@ -20,12 +20,12 @@ module.exports = {
       const { username, password, rememberMe } = req.body;
       const user = await User.findOne({ username });
       if (!user) {
-        return res.status(400).json({ error: 'Wrong username or password' });
+        return res.status(401).json({ error: 'Wrong username or password' });
       }
 
       const valid = await bcrypt.compare(password, user.password_hash);
       if (!valid) {
-        return res.status(400).json({ error: 'Wrong username or password' });
+        return res.status(401).json({ error: 'Wrong username or password' });
       }
 
       const expiresIn = rememberMe ? '7d' : '2h';
@@ -49,14 +49,16 @@ module.exports = {
       if (!user.is_verified) {
         const link = `http://localhost:3000/user/verify`;
         mailFunctions.sendVerificationEmail(user.email, link, username);
-        res
+        return res
           .status(201)
           .json({
             message: `Hello ${user.firstname}, apparently you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`,
           });
       }
 
-      res.redirect('/events');
+      res.status(200).json({
+        message: `Hello ${user.firstname}, you have successfully logged in!`,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -131,7 +133,7 @@ module.exports = {
       });
 
       const link = `http://localhost:3000/user/verify`;
-      mailFunctions.sendVerificationEmail(user.email, link, username);
+      await mailFunctions.sendVerificationEmail(user.email, link, username);
 
       res
         .status(201)

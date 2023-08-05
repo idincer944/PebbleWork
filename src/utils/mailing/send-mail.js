@@ -24,9 +24,9 @@ const sendEmail = (to, subject, htmlContent) => {
   };
   return transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
-      console.log(err);
+      reject(err);
     } else {
-      console.log('Email sent: ' + info.response);
+      resolve(info);
     }
   });
 };
