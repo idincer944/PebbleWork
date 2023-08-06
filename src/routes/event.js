@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticate, isAdmin } = require('../middleware/authenticate');
+
 const router = express.Router();
 
 const eventController = require('../controllers/eventController');
@@ -17,7 +18,7 @@ router.get('/filter', eventController.filterEvents);
 router.post('/join/:eventId', authenticate, eventController.joinEvent);
 router.post('/leave/:eventId', authenticate, eventController.leaveEvent);
 
-//commnets
+// commnets
 router.post('/addComment/:eventId', authenticate, commentController.addComment);
 router.delete(
   '/deleteComment/:commentId',
@@ -30,7 +31,7 @@ router.put(
   commentController.updateComment
 );
 
-//likes
+// likes
 router.post('/likeEvent/:eventId', authenticate, likeController.likeEvent);
 router.delete(
   '/removeLikeEvent/:eventId',

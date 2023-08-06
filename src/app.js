@@ -12,6 +12,7 @@ const eventRouter = require('./routes/event');
 const donationRouter = require('./routes/donation');
 
 const connectToMongo = require('./db');
+
 const app = express();
 
 app.use(express.json());
@@ -29,7 +30,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-let swaggerSpec = {
+const swaggerSpec = {
   openapi: '3.1.0',
   info: {
     title: 'Express API with Swagger',
