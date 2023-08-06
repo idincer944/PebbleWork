@@ -162,4 +162,37 @@ function validateComment(comment) {
   return validationSchema.validate(comment, { abortEarly: false });
 }
 
-module.exports = { validateEvent, validateUser, validateComment };
+function validateDonation(donation) {
+  const validationSchema = Joi.object({
+    // eventId: Joi.string().required().messages({
+    //   'string.base': 'Event ID must be a string',
+    //   'string.empty': 'Event ID is required',
+    //   'any.required': 'Event ID is required',
+    // }),
+    // userId: Joi.string().required().messages({
+    //   'string.base': 'User ID must be a string',
+    //   'string.empty': 'User ID is required',
+    //   'any.required': 'User ID is required',
+    // }),
+    amount: Joi.number().positive().required().messages({
+      'number.base': 'Amount must be a number',
+      'number.empty': 'Amount is required',
+      'number.positive': 'Amount must be a positive number',
+      'any.required': 'Amount is required',
+    }),
+    currency: Joi.string().required().messages({
+      'string.base': 'Currency must be a string',
+      'string.empty': 'Currency is required',
+      'any.required': 'Currency is required',
+      'any.only': 'Currency must be either "USD" or "TRY"',
+    }),
+  });
+  return validationSchema.validate(donation, { abortEarly: false });
+}
+
+module.exports = {
+  validateEvent,
+  validateUser,
+  validateComment,
+  validateDonation,
+};

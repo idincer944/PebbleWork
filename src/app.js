@@ -9,8 +9,10 @@ const swaggerUi = require('swagger-ui-express');
 const { swaggerDocument } = require('./server/swagger.json'); // Importing the Swagger file
 const userRouter = require('./routes/user');
 const eventRouter = require('./routes/event');
+const donationRouter = require('./routes/donation');
 
 const connectToMongo = require('./db');
+
 const app = express();
 
 app.use(express.json());
@@ -18,6 +20,7 @@ app.use(cookieParser());
 
 app.use('/users', userRouter);
 app.use('/events', eventRouter);
+app.use('/donations', donationRouter);
 
 connectToMongo();
 
@@ -27,7 +30,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-let swaggerSpec = {
+const swaggerSpec = {
   openapi: '3.1.0',
   info: {
     title: 'Express API with Swagger',

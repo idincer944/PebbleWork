@@ -1,11 +1,13 @@
 const { default: mongoose } = require('mongoose');
-const donation = require('../models/donation');
+const Event = require('../models/event');
+const User = require('../models/user');
 const Donation = require('../models/donation');
-const { validateEvent } = require('../utils/validations');
+const { validateDonation } = require('../utils/validations');
+const mailFunctions = require('../utils/mailing/mail-functions');
 
 module.exports = {
   createDonation: async (req, res) => {
-    const validationResult = validateEvent(req.body);
+    const validationResult = validateDonation(req.body);
 
     if (validationResult.error) {
       const errorMessages = validationResult.error.details.map(
@@ -14,10 +16,10 @@ module.exports = {
       return res.status(400).json({ errors: errorMessages });
     }
 
-    const { eventId, userId, amount, currency } = validationResult.value;
-
     try {
-      const { eventId, userId, amount, currency } = req.body;
+      const userId = req.user.user_id;
+      const { eventId } = req.params;
+      const { amount, currency } = validationResult.value;
 
       const newDonation = new Donation({
         eventId,
@@ -26,9 +28,24 @@ module.exports = {
         currency,
       });
 
-      const savedDonation = await newDonation.save();
+      await newDonation.save();
 
-      res.status(201).json(savedDonation);
+
+      const event = await Event.findById(eventId);
+      const user = await User.findById(userId);
+      event.donations.push(newDonation);
+
+      await event.save();
+
+      mailFunctions.sendThankyouForDonationEmail(
+        req.user.email,
+        event.name,
+        user.firstname,
+        amount,
+        currency
+      );
+
+      res.status(201).json(newDonation);
     } catch (err) {
       console.error('Error creating donation:', err);
       res.status(500).json({ error: 'Something went wrong' });
@@ -107,7 +124,9 @@ module.exports = {
         // filter donation by donation Id
         { $match: { eventId: mongoose.Types.ObjectId(eventId) } },
         // group remaining documents by event id and calculate total amount
-        { $group: { _id: null, totalAmount: { $sum: '$amount' } } },
+        { $group: { _id: `$eventId`, totalAmount: { $sum: `$amount` } } },
+        // projects the donor (renamed from _id) and amount fields for the output.
+        { $project: { _id: 0, donor: `$_id`, amount: '$totalAmount' } },
       ]);
       const result = totalDonations.length ? totalDonations[0].totalAmount : 0;
 
@@ -121,7 +140,7 @@ module.exports = {
   getTopDonors: async (req, res) => {
     try {
       const topDonors = await Donation.aggregate([
-        { $group: { _id: '$userId', totalDonation: { $sum: '$amount' } } },
+        { $group: { _id: `$userId`, totalDonation: { $sum: `$amount` } } },
         // sorts the grouped data in descending order based on total amount, top donors appear at the beginning
         { $sort: { totalDonation: -1 } },
         // limits the result to the top 10 donors
