@@ -9,6 +9,7 @@ const swaggerUi = require('swagger-ui-express');
 const { swaggerDocument } = require('./server/swagger.json'); // Importing the Swagger file
 const userRouter = require('./routes/user');
 const eventRouter = require('./routes/event');
+const donationRouter = require('./routes/donation');
 
 const connectToMongo = require('./db');
 const app = express();
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 app.use('/users', userRouter);
 app.use('/events', eventRouter);
+app.use('/donations', donationRouter);
 
 connectToMongo();
 
@@ -68,6 +70,5 @@ fs.readFile(filePath, 'utf8', (err, data) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
 
 module.exports = app;
