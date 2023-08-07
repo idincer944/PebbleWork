@@ -12,8 +12,22 @@ const {correctUser,
 
 jest.setTimeout(1500);
 
+
+
 beforeAll(async () => {
 const password_hash = await bcrypt.hash('testpassword', 10);
+   // Create a test user
+   const correctUser = await new User({
+    username: 'johndoe',
+    firstname: 'John',
+    lastname: 'Doe',
+    password_hash: password_hash,
+    email: 'johndoe@example.com',
+    is_admin: false,
+    is_verified: true,
+    avatar: 'avatar-url',
+   })
+   await correctUser.save();
    // Create an admin user
    const adminUser = await new User({
      username: 'adminuser',
@@ -55,7 +69,7 @@ const password_hash = await bcrypt.hash('testpassword', 10);
 
 afterAll(async () => {
   await User.deleteMany({
-    username: { $in: ['testuser', 'unverifieduser', 'adminuser', 'idincer944', 'deleteduser' ] },
+    username: { $in: ['testuser', 'unverifieduser', 'adminuser', 'deleteduser', 'johndoe' ] },
   });
   await mongoose.connection.close();
   server.close();
@@ -278,8 +292,11 @@ describe('GET /profile', () => {
 
 describe('GET /:id', () => {
   it('should return 200 and user profile', async () => {
+    const user = await User.findOne({username: 'johndoe'});
+    const userId = user._id.toString();
+    console.log(userId)
     const response = await request(app)
-      .get(`/users/64d0d2d19684497fcb473be4`)
+      .get(`/users/${userId}`)
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -345,6 +362,22 @@ describe('PUT /change-password', () => {
     .set('Cookie', userResponseData.header['set-cookie'])
     .send(passwords);
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(`Password changed successfully`);
+    expect(response.body).toEqual({"message": "Password changed successfully"});
   });
 });
+
+// describe('PUT /forgot-password', () => {
+//   it('should return 200 and send email', async () => {
+//     const user = {
+//       email: 'johndoe@example.com'
+//     }
+
+//     const response = await request(app)
+//     .put('/users/forgot-password')
+//     .send(user);
+//     console.log(response.body)
+//     expect(response.status).toBe(200);
+//     expect(response.body).toEqual({"message": "Email sent"});
+//   });
+
+// })
