@@ -55,8 +55,7 @@ module.exports = {
             message: `Hello ${user.firstname}, apparently you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`,
           });
       }
-
-      res.status(200).json({
+      return res.status(200).json({
         message: `Hello ${user.firstname}, you have successfully logged in!`,
       });
     } catch (err) {
@@ -116,6 +115,9 @@ module.exports = {
         password_hash,
         avatar,
       });
+
+      await user.save();
+
       const token = jwt.sign(
         { user_id: user._id, email: user.email },
         process.env.TOKEN_KEY,
@@ -135,7 +137,7 @@ module.exports = {
       const link = `http://localhost:3000/user/verify`;
       await mailFunctions.sendVerificationEmail(user.email, link, username);
 
-      res
+      return res
         .status(201)
         .json({
           message: `Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`,
@@ -158,13 +160,8 @@ module.exports = {
   },
 
   getProfile: async (req, res) => {
-    try {
-      const token = req.cookies.token;
-      if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      const user = await User.findById(decoded.user_id);
+    try{
+      const user = await User.findById(req.user.user_id);
 
       const response = {
         fullName: user.fullName,
@@ -181,9 +178,11 @@ module.exports = {
   getUserById: async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
+      if(!user) {
+        return res.status(404).json({error: 'User not found'});
+      }
       const response = {
         fullName: user.fullName,
-        email: user.email,
         username: user.username,
         avatar: user.avatar,
       };
@@ -226,10 +225,7 @@ module.exports = {
   },
   updateProfile: async (req, res) => {
     try {
-      const token = req.cookies.token;
-      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      const user = await User.findById(decoded.user_id);
-
+      const user = await User.findById(req.user.user_id);
       if (!user) {
         return res.status(401).json({ error: 'User not found' });
       }
@@ -254,12 +250,7 @@ module.exports = {
   },
   changePassword: async (req, res) => {
     try {
-      const token = req.cookies.token;
-      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-
-      // Retrieve the user from the database
-      const user = await User.findById(decoded.user_id);
-
+      const user = await User.findById(req.user.user_id);
       // Check if the user exists
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
