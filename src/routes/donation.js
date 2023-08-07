@@ -1,28 +1,29 @@
 const express = require('express');
-const authenticate = require('../middleware/authenticate');
+const { authenticate, isAdmin } = require('../middleware/authenticate');
 
 const router = express.Router();
 
 const donationController = require('../controllers/donationController');
 
-router.post('/donations', authenticate(), donationController.createDonation);
-router.get('/donations', donationController.getAllDonations);
-router.get('/donations/:donationId', donationController.getDonationById);
+router.post('/:eventId', authenticate, donationController.createDonation);
+router.get('/', donationController.getAllDonations);
+router.get('/:donationId', authenticate, donationController.getDonationById);
 router.put(
-  '/donations/:donationId/status',
-  authenticate(),
+  '/:donationId/status',
+  authenticate,
   donationController.updateDonationStatus
 );
 router.delete(
-  '/donations/:donationId',
-  authenticate(),
+  '/:donationId',
+  authenticate,
+  isAdmin,
   donationController.deleteDonation
 );
 router.get(
-  '/events/:eventId/totalDonations',
-  authenticate(),
+  '/:eventId/totalDonations',
+  authenticate,
   donationController.getTotalDonationsForEvent
 );
-router.get('/donations/topDonors', donationController.getTopDonors);
+router.get('/topDonors', authenticate, donationController.getTopDonors);
 
 module.exports = router;

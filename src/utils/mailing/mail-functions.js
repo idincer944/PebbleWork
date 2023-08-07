@@ -363,6 +363,36 @@ module.exports = {
         `;
     sendEmail(to, subject, htmlContent);
   },
+  sendThankyouForDonationEmail: (to, eventName, donor, amount, currency) => {
+    const subject = `Thank you for your donation for ${eventName}`;
+    const htmlContent = `<body>
+        <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; color: #333;">
+          <div class="header" style="text-align: center;">
+            <h1 style="color: #1a237e;">Donaiton for <strong>${eventName}</strong> 💬</h1>
+          </div>
+          <div class="content">
+            <p>Dear ${donor},</p>
+            <p style="margin-bottom: 15px;">We hope this email finds you well.</p>
+            <p>Your donation of ${amount} ${currency} for this <strong>${eventName}</strong> event has been forwarded to us. </p>
+            <p style="margin-top: 10px;"><strong>Donation:</strong></p>
+            <p style="margin-top: 10px;">Thank you, ${donor}, for your generous contribution.</p>
+          </div>
+          <div class="">
+            <p>Best regards, 👋</p>
+            <p>The <strong>Cigkoftes</strong> Team 🌟</p>
+            <div style="text-align: center;">
+              <img src="https://cdn.getiryemek.com/restaurants/1643023274713_1125x522.jpeg" alt="Cigkoftes Team" style="max-width: 100%; height: auto; border-radius: 10px;">
+            </div>
+          </div>
+          <div class="signature">
+            <p>Take care and have a great day! 🌞</p>
+          </div>
+        </div>
+      </body>
+        `;
+    sendEmail(to, subject, htmlContent);
+  },
+
   sendTemporaryPasswordEmail: (to, link, username, temporaryPassword) => {
     const subject = 'Here is your temporary password';
     const htmlContent = `<head>

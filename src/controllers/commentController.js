@@ -45,14 +45,14 @@ module.exports = {
       const comment = new Comment({
         user: userId,
         event: eventId,
-        content: content,
+        content,
       });
 
       await comment.save();
 
       event.comments.push(comment._id);
       await event.save();
-      //sen notification to the user who created the event
+      // sen notification to the user who created the event
       const user = await User.findById(event.createdBy);
       if (userId !== event.createdBy.toString()) {
         mailFunctions.sendCommentNotificationEmail(

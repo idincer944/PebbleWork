@@ -81,6 +81,12 @@ const eventSchema = new mongoose.Schema({
       ref: 'Like',
     },
   ],
+  donations: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Donation',
+    },
+  ],
 });
 
 module.exports = mongoose.model('Event', eventSchema);

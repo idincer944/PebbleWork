@@ -1,3 +1,6 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable eqeqeq */
+/* eslint-disable consistent-return */
 const Event = require('../models/event');
 // const jwt = require('jsonwebtoken');
 const { validateEvent } = require('../utils/validations');
@@ -137,7 +140,7 @@ module.exports = {
       if (eventDate <= today) {
         return res.status(403).json({ error: "You can't cancel past events" });
       }
-      //res.status(200).json(event);
+      // res.status(200).json(event);
       const eventToCancel = await Event.findById(eventId);
       eventToCancel.isPublished = false;
       await eventToCancel.save();
