@@ -37,5 +37,20 @@ module.exports = {
       res.status(500).send('Internal Server Error');
     }
     },
+  getBlogById : async (req, res) => {
+    const { blogId } = req.params;
+    try {
+      const blog = await Blog.findById(blogId).populate({
+        path: 'author',
+        select: 'title',
+      });
+      if (!blog) {
+        return res.status(404).json({ error: 'Blog not found' });
+      }
+      res.status(200).json(blog);
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
 
 };
