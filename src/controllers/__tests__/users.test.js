@@ -8,7 +8,7 @@ const {correctUser,
   incorrectUser2,
   unverifiedUser,
   adminUser,
-  newUser} = require('../data')
+  newUser} = require('./data')
 
 jest.setTimeout(1500);
 
@@ -27,7 +27,7 @@ const password_hash = await bcrypt.hash('testpassword', 10);
     is_verified: true,
     avatar: 'avatar-url',
    })
-   await correctUser.save();
+
    // Create an admin user
    const adminUser = await new User({
      username: 'adminuser',
@@ -39,7 +39,6 @@ const password_hash = await bcrypt.hash('testpassword', 10);
      is_verified: true,
      avatar: 'avatar-url',
    });
-   await adminUser.save();
 
    // Create a user with an unverified account
    const unverifiedUser = await new User({
@@ -52,8 +51,8 @@ const password_hash = await bcrypt.hash('testpassword', 10);
      is_verified: false,
      avatar: 'avatar-url',
    })
-   await unverifiedUser.save();
 
+   // Create a user to delete 
    const deleteUser = await new User ({
      firstname: 'deleteduser',
      lastname: 'deleteduser',
@@ -63,7 +62,13 @@ const password_hash = await bcrypt.hash('testpassword', 10);
      is_admin: false,
      is_verified: true,
    })
-   await deleteUser.save();
+
+   await Promise.all([
+    correctUser.save(),
+    adminUser.save(),
+    unverifiedUser.save(),
+    deleteUser.save(),
+  ]);
    
 });
 
@@ -147,7 +152,6 @@ describe('POST /signin', () => {
 });
 
 describe('POST /signup', () => {
-
   it('should return 200 and JWT token for registered user', async () => {
     const response = await request(app)
       .post('/users/signup')
@@ -178,6 +182,35 @@ describe('POST /signup', () => {
       .send({...newUser, email: "johndoe@example.com"});
     expect(response.status).toBe(400);
     expect(response.body).toEqual({"error": "Email already exists"});
+  });
+
+  it('should return 400 for user with password mismatch', async () => {
+    const response = await request(app)
+      .post('/users/signup')
+      .send({...newUser, password2: "wrongpassword"});
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({"error": "Passwords do not match"});
+  });
+
+  it('should warn for weak password', async () => {
+    const response = await request(app)
+      .post('/users/signup')
+      .send({...newUser, password: '12345'})
+    expect(response.body).toEqual({"errors": ["Password should have a minimum of 6 characters"]})
+  });
+
+  it('should warn for invalid email', async () => {
+    const response = await request(app)
+      .post('/users/signup')
+      .send({...newUser, email: 'invalidemail'})
+    expect(response.body).toEqual({"errors": ['Email must be a valid email address']})
+  });
+
+  it('should warn for unaccepted TOS', async () => {
+    const response = await request(app)
+      .post('/users/signup')
+      .send({...newUser, acceptTos: false})
+    expect(response.body).toEqual({"error": "You must accept the Terms of Service"})
   });
 });
 
@@ -294,7 +327,6 @@ describe('GET /:id', () => {
   it('should return 200 and user profile', async () => {
     const user = await User.findOne({username: 'johndoe'});
     const userId = user._id.toString();
-    console.log(userId)
     const response = await request(app)
       .get(`/users/${userId}`)
 
@@ -366,18 +398,39 @@ describe('PUT /change-password', () => {
   });
 });
 
-// describe('PUT /forgot-password', () => {
-//   it('should return 200 and send email', async () => {
-//     const user = {
-//       email: 'johndoe@example.com'
-//     }
+describe('PUT /forgot-password', () => {
+  it('should return 200 and send email with a random password', async () => {
+    const user = {
+      email: 'johndoe@example.com'
+    }
 
-//     const response = await request(app)
-//     .put('/users/forgot-password')
-//     .send(user);
-//     console.log(response.body)
-//     expect(response.status).toBe(200);
-//     expect(response.body).toEqual({"message": "Email sent"});
-//   });
+    const response = await request(app)
+    .post('/users/forgot-password')
+    .send(user);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ message: 'Reset password sent to your email' });
+  });
 
-// })
+  it('should return 400 if email is missing', async () => {
+    const response = await request(app)
+      .post('/users/forgot-password')
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ "error": "Email is required" });
+  });
+
+  it('should return 404 if user with provided email does not exist', async () => {
+    const nonExistentUser = {
+      email: 'nonexistent@example.com'
+    }
+
+    const response = await request(app)
+      .post('/users/forgot-password')
+      .send(nonExistentUser);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ "error": "User not found" });
+  });
+
+})

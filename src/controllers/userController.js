@@ -288,10 +288,15 @@ module.exports = {
   forgotPassword: async (req, res) => {
     try {
       const { email } = req.body;
+
+      if(!email) {
+        return res.status(400).json({error: 'Email is required'});
+      }
+
       const user = await User.findOne({ email });
 
       if (!user) {
-        return res.status(400).json({ error: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
 
       // Generate a random reset token and create a JWT
@@ -327,10 +332,10 @@ module.exports = {
         temporaryPassword
       );
 
-      res.status(200).json({ message: 'Reset link sent to your email' });
+      return res.status(200).json({ message: 'Reset password sent to your email' });
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 };

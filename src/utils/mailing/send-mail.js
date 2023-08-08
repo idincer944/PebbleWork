@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // thsi is a general function. we use it in the specific function like (sendVerificationEmail)
 // if you want to add new mail function just go to /utils/mail/mail-functions.js and add it there.
-const sendEmail = (to, subject, htmlContent) => {
+const sendEmail = async (to, subject, htmlContent) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -22,13 +22,12 @@ const sendEmail = (to, subject, htmlContent) => {
     text: 'Welcome',
     html: htmlContent,
   };
-  return transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(info);
-    }
-  });
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    return info;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = sendEmail;
