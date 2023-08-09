@@ -8,9 +8,9 @@ module.exports = {
   getAllUsers: async (req, res) => {
     try {
       const users = await User.find({});
-      res.status(200).json(users);
+      return res.status(200).json(users);
     } catch (error) {
-      res
+      return res
         .status(500)
         .json({ error: 'Internal Server Error while getting users' });
     }
@@ -21,12 +21,12 @@ module.exports = {
       const { username, password, rememberMe } = req.body;
       const user = await User.findOne({ username });
       if (!user) {
-        return res.status(400).json({ error: 'Wrong username or password' });
+        return res.status(401).json({ error: 'Wrong username or password' });
       }
 
       const valid = await bcrypt.compare(password, user.password_hash);
       if (!valid) {
-        return res.status(400).json({ error: 'Wrong username or password' });
+        return res.status(401).json({ error: 'Wrong username or password' });
       }
 
       const expiresIn = rememberMe ? '7d' : '2h';
@@ -50,14 +50,15 @@ module.exports = {
       if (!user.is_verified) {
         const link = `http://localhost:3000/user/verify`;
         mailFunctions.sendVerificationEmail(user.email, link, username);
-        res
+        return res
           .status(201)
           .json({
             message: `Hello ${user.firstname}, apparently you have not verify your email yet! 🎉 Please check your email for the new verification link. 🌟`,
           });
       }
-
-      res.redirect('/events');
+      return res.status(200).json({
+        message: `Hello ${user.firstname}, you have successfully logged in!`,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -115,6 +116,9 @@ module.exports = {
         password_hash,
         avatar,
       });
+
+      await user.save();
+
       const token = jwt.sign(
         { user_id: user._id, email: user.email },
         process.env.TOKEN_KEY,
@@ -132,9 +136,9 @@ module.exports = {
       });
 
       const link = `http://localhost:3000/user/verify`;
-      mailFunctions.sendVerificationEmail(user.email, link, username);
+      await mailFunctions.sendVerificationEmail(user.email, link, username);
 
-      res
+      return res
         .status(201)
         .json({
           message: `Hello ${user.firstname}, Congratulations on successfully registering! 🎉 Please check your email for a verification link. 🌟`,
@@ -157,13 +161,8 @@ module.exports = {
   },
 
   getProfile: async (req, res) => {
-    try {
-      const token = req.cookies.token;
-      if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      const user = await User.findById(decoded.user_id);
+    try{
+      const user = await User.findById(req.user.user_id);
 
       const response = {
         fullName: user.fullName,
@@ -180,9 +179,11 @@ module.exports = {
   getUserById: async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
+      if(!user) {
+        return res.status(404).json({error: 'User not found'});
+      }
       const response = {
         fullName: user.fullName,
-        email: user.email,
         username: user.username,
         avatar: user.avatar,
       };
@@ -225,10 +226,7 @@ module.exports = {
   },
   updateProfile: async (req, res) => {
     try {
-      const token = req.cookies.token;
-      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      const user = await User.findById(decoded.user_id);
-
+      const user = await User.findById(req.user.user_id);
       if (!user) {
         return res.status(401).json({ error: 'User not found' });
       }
@@ -253,12 +251,7 @@ module.exports = {
   },
   changePassword: async (req, res) => {
     try {
-      const token = req.cookies.token;
-      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-
-      // Retrieve the user from the database
-      const user = await User.findById(decoded.user_id);
-
+      const user = await User.findById(req.user.user_id);
       // Check if the user exists
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -295,10 +288,15 @@ module.exports = {
   forgotPassword: async (req, res) => {
     try {
       const { email } = req.body;
+
+      if(!email) {
+        return res.status(400).json({error: 'Email is required'});
+      }
+
       const user = await User.findOne({ email });
 
       if (!user) {
-        return res.status(400).json({ error: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
 
       // Generate a random reset token and create a JWT
@@ -334,10 +332,10 @@ module.exports = {
         temporaryPassword
       );
 
-      res.status(200).json({ message: 'Reset link sent to your email' });
+      return res.status(200).json({ message: 'Reset password sent to your email' });
     } catch (err) {
       console.log(err);
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
 };

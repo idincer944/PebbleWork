@@ -6,7 +6,7 @@ const router = express.Router();
 const donationController = require('../controllers/donationController');
 
 router.post('/:eventId', authenticate, donationController.createDonation);
-router.get('/', donationController.getAllDonations);
+router.get('/', authenticate, isAdmin, donationController.getAllDonations);
 router.get('/:donationId', authenticate, donationController.getDonationById);
 router.put(
   '/:donationId/status',

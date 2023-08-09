@@ -6,13 +6,17 @@ require('../app');
 exports.authenticate = (req, res, next) => {
   const token = req.cookies.token;
   if (token) {
-    jwt.verify(token, process.env.TOKEN_KEY, (err, user) => {
-      if (err) {
-        return res.status(403).json({ error: 'Invalid token' });
-      }
-      req.user = user;
-      next();
-    });
+    try {
+      jwt.verify(token, process.env.TOKEN_KEY, (err, user) => {
+        if (err) {
+          return res.status(403).json({ error: 'Invalid token' });
+        }
+        req.user = user;
+        next();
+      });
+    } catch (error) {
+      return res.status(500).json({ error: 'Server error' });
+    }
   } else {
     return res.status(401).json({ error: 'Unauthorized' });
   }

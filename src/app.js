@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 
 const swaggerUi = require('swagger-ui-express');
-const { swaggerDocument } = require('./server/swagger.json'); // Importing the Swagger file
 const userRouter = require('./routes/user');
 const eventRouter = require('./routes/event');
 const donationRouter = require('./routes/donation');
@@ -27,9 +26,9 @@ connectToMongo();
 
 const PORT = process.env.NODE_LOCAL_PORT || 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+// app.get('/', (req, res) => {
+//   res.send('Hello World!');
+// });
 
 const swaggerSpec = {
   openapi: '3.1.0',
@@ -40,7 +39,7 @@ const swaggerSpec = {
       'This is a simple API application made with Express and documented with Swagger',
     license: { name: 'MIT', url: 'https://spdx.org/licenses/MIT.html' },
   },
-  servers: [{ url: 'http://localhost:3000/api-docs' }],
+  servers: [{ url: 'http://localhost:3000' }],
   paths: {},
   components: {},
   tags: [],
@@ -60,7 +59,7 @@ fs.readFile(filePath, 'utf8', (err, data) => {
     Object.assign(swaggerSpec, swaggerDocument);
 
     app.use(
-      '/api-docs',
+      '/',
       swaggerUi.serve,
       swaggerUi.setup(swaggerSpec, { explorer: true })
     );
@@ -69,9 +68,8 @@ fs.readFile(filePath, 'utf8', (err, data) => {
   }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-
-module.exports = app;
+module.exports = {app, server};
