@@ -2,6 +2,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable consistent-return */
 const Event = require('../models/event');
+const mongoose = require('mongoose')
 // const jwt = require('jsonwebtoken');
 const { validateEvent } = require('../utils/validations');
 const mailFunctions = require('../utils/mailing/mail-functions');
@@ -94,7 +95,9 @@ module.exports = {
   },
   getEventById: async (req, res) => {
     const { eventId } = req.params;
-
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+      return res.status(404).json({ error: 'Invalid Event ID' });
+    }
     try {
       const event = await Event.findById(eventId).populate({
         path: 'comments',
