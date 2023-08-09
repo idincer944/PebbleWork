@@ -156,3 +156,60 @@ describe('GET /events/search', () => {
     expect(response.body.events).toEqual([]);
   });
 });
+
+
+describe('GET /events/filter', () => {
+  it('should return events that match the search query, start date, end date, location, and category', async () => {
+    const eventPayload1 = {
+      name: 'New Event 1',
+      location: 'San Francisco',
+      time: '2023-03-08T12:00:00',
+      description: 'This is a new event about cats',
+      picture: 'https://picsum.photos/200/300',
+      category: 'animals',
+      maxParticipants: 100,
+      registrationDeadline: '2023-03-07T12:00:00',
+      eventWebsite: 'https://example.com/new_event_1',
+      isPublished: true,
+      createdBy: '64b0336848fc2bc758de9148',
+    };
+
+    const eventPayload2 = {
+      name: 'New Event 2',
+      location: 'New York City',
+      time: '2023-03-09T12:00:00',
+      description: 'This is another new event about dogs',
+      picture: 'https://picsum.photos/200/300',
+      category: 'animals',
+      maxParticipants: 200,
+      registrationDeadline: '2023-03-08T12:00:00',
+      eventWebsite: 'https://example.com/new_event_2',
+      isPublished: true,
+      createdBy: '64b0336848fc2bc758de9149',
+    };
+
+    const event1 = new Event(eventPayload1);
+    const event2 = new Event(eventPayload2);
+    await event1.save();
+    await event2.save();
+
+    const response = await request(app)
+      .get('/events/filter?searchQuery=cats&startDate=2023-03-08&endDate=2023-03-09&location=San+Francisco&category=animals');
+
+    expect(response.status).toBe(200);
+    expect(response.body.events).toHaveLength(1);
+    expect(response.body.events[0].name).toEqual(event1.name);
+    expect(response.body.events[0].description).toEqual(event1.description);
+    expect(response.body.events[0].category).toEqual(event1.category);
+  });
+
+  it('should return an empty array if no events match the filters', async () => {
+    const response = await request(app)
+      .get('/events/filter?searchQuery=dogs&startDate=2066-03-08&endDate=2023-03-09&location=San+Francisco&category=animals');
+  
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({message: 'There are no events found with these filters'});
+   
+  });
+  
+});
