@@ -56,3 +56,53 @@ describe('GET /events/:id', () => {
 
 
 //*********************************** */
+
+
+describe('GET /events', () => {
+  it('should return all events', async () => {
+    const eventPayload1 = {
+      name: 'New Event 1',
+      location: 'San Francisco',
+      time: '2023-03-08T12:00:00',
+      description: 'This is a new event',
+      picture: 'https://picsum.photos/200/300',
+      category: 'other',
+      maxParticipants: 100,
+      registrationDeadline: '2023-03-07T12:00:00',
+      eventWebsite: 'https://example.com/new_event_1',
+      isPublished: true,
+      createdBy: '64b0336848fc2bc758de9148',
+    };
+
+    const eventPayload2 = {
+      name: 'New Event 2',
+      location: 'New York City',
+      time: '2023-03-09T12:00:00',
+      description: 'This is another new event',
+      picture: 'https://picsum.photos/200/300',
+      category: 'animals',
+      maxParticipants: 200,
+      registrationDeadline: '2023-03-08T12:00:00',
+      eventWebsite: 'https://example.com/new_event_2',
+      isPublished: true,
+      createdBy: '64b0336848fc2bc758de9149',
+    };
+
+    const event1 = new Event(eventPayload1);
+    const event2 = new Event(eventPayload2);
+    await event1.save();
+    await event2.save();
+
+    const response = await request(app)
+      .get('/events');
+
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].name).toEqual(event1.name);
+    expect(response.body[0].location).toEqual(event1.location);
+    expect(response.body[0].category).toEqual(event1.category);
+    expect(response.body[1].name).toEqual(event2.name);
+    expect(response.body[1].location).toEqual(event2.location);
+    expect(response.body[1].category).toEqual(event2.category);
+  });
+});
