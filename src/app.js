@@ -9,7 +9,7 @@ const swaggerUi = require('swagger-ui-express');
 const userRouter = require('./routes/user');
 const eventRouter = require('./routes/event');
 const donationRouter = require('./routes/donation');
-
+const blogRouter = require('./routes/blog');
 const connectToMongo = require('./db');
 
 const app = express();
@@ -20,6 +20,7 @@ app.use(cookieParser());
 app.use('/users', userRouter);
 app.use('/events', eventRouter);
 app.use('/donations', donationRouter);
+app.use('/blogs', blogRouter);
 
 connectToMongo();
 

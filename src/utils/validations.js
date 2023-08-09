@@ -162,6 +162,27 @@ function validateComment(comment) {
   return validationSchema.validate(comment, { abortEarly: false });
 }
 
+function validateBlog(blog) {
+  const validationSchema = Joi.object({
+    title: Joi.string().min(10).max(50).required().messages({
+      'string.base': 'title must be a string',
+      'string.empty': 'title cannot be empty',
+      'string.min': 'title must have at least {#limit} character',
+      'string.max': 'title can have at most {#limit} characters',
+      'any.required': 'title is required',
+    }),
+       content: Joi.string().min(20).max(500).required().messages({
+      'string.base': 'Content must be a string',
+      'string.empty': 'Content cannot be empty',
+      'string.min': 'Content must have at least {#limit} character',
+      'string.max': 'Content can have at most {#limit} characters',
+      'any.required': 'Content is required',
+    }),
+  });
+  return validationSchema.validate(blog, { abortEarly: false });
+}
+
+
 function validateDonation(donation) {
   const validationSchema = Joi.object({
     // eventId: Joi.string().required().messages({
@@ -195,4 +216,5 @@ module.exports = {
   validateUser,
   validateComment,
   validateDonation,
+  validateBlog,
 };
