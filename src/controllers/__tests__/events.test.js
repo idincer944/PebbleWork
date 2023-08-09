@@ -213,3 +213,63 @@ describe('GET /events/filter', () => {
   });
   
 });
+
+/*
+describe('POST /events', () => {
+  it('should create a new event if the request body is valid', async () => {
+    const eventPayload = {
+      name: 'New Event',
+      location: 'San Francisco',
+      time: '2023-03-08T12:00:00',
+      description: 'This is a new event',
+      picture: 'https://picsum.photos/200/300',
+      category: 'health',
+      maxParticipants: 100,
+      registrationDeadline: '2023-03-07T12:00:00',
+      eventWebsite: 'https://example.com/new_event',
+      isPublished: true,
+      createdBy: '64b0336848fc2bc758de9148',
+    };
+
+    const response = await request(app)
+      .post('/events')
+      .send(eventPayload);
+
+    expect(response.status).toBe(201);
+    expect(response.body.name).toEqual(eventPayload.name);
+    expect(response.body.location).toEqual(eventPayload.location);
+    expect(response.body.time).toEqual(eventPayload.time);
+    expect(response.body.description).toEqual(eventPayload.description);
+    expect(response.body.picture).toEqual(eventPayload.picture);
+    expect(response.body.category).toEqual(eventPayload.category);
+  });
+
+  it('should return a validation error if the request body is invalid', async () => {
+    const eventPayload = {
+      name: '',
+      location: '',
+      time: '',
+      description: '',
+      picture: '',
+      category: '',
+    };
+
+    const response = await request(app)
+      .post('/events')
+      .send(eventPayload);
+
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toHaveLength(5);
+    expect(response.body.errors[0].field).toEqual('name');
+    expect(response.body.errors[0].message).toEqual('This field is required.');
+    expect(response.body.errors[1].field).toEqual('location');
+    expect(response.body.errors[1].message).toEqual('This field is required.');
+    expect(response.body.errors[2].field).toEqual('time');
+    expect(response.body.errors[2].message).toEqual('This field is required.');
+    expect(response.body.errors[3].field).toEqual('description');
+    expect(response.body.errors[3].message).toEqual('This field is required.');
+    expect(response.body.errors[4].field).toEqual('category');
+    expect(response.body.errors[4].message).toEqual('This field is required.');
+  });
+});
+*/
