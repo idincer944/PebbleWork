@@ -1,87 +1,294 @@
 {
   "paths": {
-    "/getAllUsers": {
-      "get": {
-        "summary": "Getting all users",
-        "tags": ["User"],
-        "operationId": "getUsers",
-        "responses": {
-          "200": {
-            "description": "All the users"
-          }
-        }
-      }
-    },
-    "/signin": {
-      "post": {
-        "summary": "Sign in the user",
-        "tags": ["User"],
-        "operationId": "signinUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "query",
-            "description": "The user name for login",
-            "required": true
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "description": "The password for login in clear text",
-            "required": true
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {}
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Sign-in successfully"
-          },
-          "400": {
-            "description": "Invalid username/password supplied"
-          }
-        }
-      }
-    },
-    "/signup": {
+    "/users/signup": {
       "post": {
         "summary": "Sign up the user",
         "tags": ["User"],
         "operationId": "signupUser",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/SignUpInput"
               }
             }
           }
         },
         "responses": {
-          "default": {
-            "description": "Sign-up successfully",
+          "201": {
+            "description": "Sign-up successful",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/User"
                 }
-              },
-              "application/xml": {
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/signin": {
+      "post": {
+        "summary": "Sign in the user",
+        "tags": ["User"],
+        "operationId": "signinUser",
+        "requestBody": {
+          "description": "Sign-in data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sign-in successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/verify": {
+      "get": {
+        "summary": "Verifying the user email",
+        "tags": ["User"],
+        "operationId": "verifyToken",
+        "responses": {
+          "200": {
+            "description": "Email verified successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Token not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "summary": "Get user profile",
+        "tags": ["User"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "getUserProfile",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/User"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user profile",
+        "tags": ["User"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "updateProfile",
+        "requestBody": {
+          "description": "Updated user profile data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     },
-    "/deleteUser/{id}": {
+    "/users/change-password": {
+      "put": {
+        "summary": "Change password",
+        "tags": ["User"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "change-password",
+        "requestBody": {
+          "description": "Change password data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+     "/users/signout": {
+      "get": {
+        "summary": "Sign out the user",
+        "tags": ["User"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "signoutUser",
+        "responses": {
+          "200": {
+            "description": "Sign-out successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Getting all users",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "tags": ["User"],
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
       "delete": {
         "summary": "Deleting user by its ID",
         "tags": ["User"],
@@ -90,28 +297,61 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID numbers that need to be considered for deleting",
-            "required": true
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
           }
         ],
         "responses": {
-          "400": {
-            "description": "Invalid id supplied"
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
-      }
-    },
-    "/verify": {
+      },
       "get": {
-        "summary": "Verifying the user email",
+        "summary": "Get user by ID",
         "tags": ["User"],
-        "operationId": "verifyToken",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "201": {
-            "description": "User email verification successful",
+          "200": {
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
@@ -119,69 +359,93 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
-    },
-    "/signout": {
-      "get": {
-        "summary": "Sign out the user",
-        "tags": ["User"],
-        "operationId": "signoutUser",
-        "responses": {
-          "default": {
-            "description": "Sign-out successfully"
-          }
-        }
-      }
-    },
 
-    "/getAllEvents": {
-      "get": {
-        "summary": "Getting all events",
-        "tags": ["Event"],
-        "operationId": "getEvents",
-        "responses": {
-          "200": {
-            "description": "All the events"
-          }
-        }
-      }
     },
-    "/createdEvents": {
-      "get": {
-        "summary": "Find all events that were created by the user with the given ID",
-        "tags": ["Event"],
-        "operationId": "getAllUserEvents",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "User ID number that need to be considered for getting events",
-            "required": true
+    "/users/forgot-password": {
+      "post": {
+        "summary": "Request password reset",
+        "tags": ["User"],
+        "operationId": "forgot-password",
+        "requestBody": {
+          "description": "Forgot password data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordInput"
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "Password reset request sent successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Events"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid ID supplied"
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     },
-    "/createNewEvent": {
+    "/events": {
+      "get": {
+        "summary": "Getting all events",
+        "tags": ["Event"],
+        "operationId": "getAllEvents",
+        "responses": {
+          "200": {
+            "description": "All the events",
+            "content": {
+              "application/json": {
+                "schema":{
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
       "post": {
         "summary": "Creating new event",
         "tags": ["Event"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "operationId": "createNewEvent",
         "requestBody": {
           "content": {
@@ -194,12 +458,52 @@
         },
         "responses": {
           "200": {
-            "description": "Creating new event successfully"
+            "description": "Creating new event successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     },
-    "/getEventById/:eventId": {
+    "/events/myEvents": {
+      "get": {
+        "summary": "Getting all users events",
+        "tags": ["Event"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "getAllUsersEvents",
+        "responses": {
+          "200": {
+            "description": "All users events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/events/{eventId}": {
       "get": {
         "summary": "Find event by its ID",
         "tags": ["Event"],
@@ -209,7 +513,10 @@
             "name": "eventId",
             "in": "path",
             "description": "ID numbers that need to be considered for getting an event",
-            "required": true
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -218,41 +525,60 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Events"
+                  "$ref": "#/components/schemas/Event"
                 }
               },
               "400": {
                 "description": "Invalid status value"
-              },
-              "404": {
-                "description": "Event not found"
               }
             }
           }
         }
-      }
-    },
-    "/deleteEvent/:eventId": {
+      },
       "delete": {
-        "summary": "Deleting event",
+        "summary": "Cancel event",
         "tags": ["Event"],
-        "operationId": "deleteEvent",
+        "operationId": "cancelEvent",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
-            "description": "Event id to delete",
-            "required": true
+            "description": "Event id to cancel",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
           }
         ],
         "responses": {
-          "400": {
-            "description": "Invalid event value"
+          "200": {
+            "description": "Event cancelled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
-      }
-    },
-    "/updateEvent/:eventId": {
+      },
       "put": {
         "summary": "Update event",
         "tags": ["Event"],
@@ -262,7 +588,10 @@
             "name": "eventId",
             "in": "path",
             "description": "ID of event that needs to be updated",
-            "required": true
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "name",
@@ -271,26 +600,113 @@
             "required": false
           }
         ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Updated event data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "405": {
-            "description": "Invalid input"
+          "200": {
+            "description": "Event updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     },
-    "/searchEvents": {
+    "/events/search": {
       "get": {
         "summary": "Search event",
         "tags": ["Event"],
         "operationId": "searchEvents",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": "Search event successfully"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     },
-    "/joinEvent/:eventId": {
+    "/events/filter": {
+      "get": {
+        "summary": "Filter event",
+        "tags": ["Event"],
+        "operationId": "filterEvents",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/events/join/{eventId}": {
       "post": {
         "summary": "Join event",
         "tags": ["Event"],
@@ -299,27 +715,681 @@
           {
             "name": "eventId",
             "in": "path",
-            "description": "ID of event that needs to be updated",
-            "required": true
-          },
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
           {
-            "name": "userId",
-            "in": "path",
-            "description": "User ID that checks already part of the event or not",
-            "required": true
+            "BearerAuth": []
           }
         ],
         "responses": {
-          "default": {
-            "description": "Join event successfully"
+          "200": {
+            "description": "Joined the event successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
+        }
+      }
+    },
+    "/events/leave/{eventId}": {
+      "post": {
+        "summary": "Leave event",
+        "tags": ["Event"],
+        "operationId": "leaveEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Left the event successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/events/addComment/{eventId}": {
+      "post": {
+        "summary": "Add a comment to an event",
+        "tags": ["Event"],
+        "operationId": "addComment",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Comment data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/events/deleteComment/{commentId}": {
+      "delete": {
+        "summary": "Delete a comment",
+        "tags": ["Event"],
+        "operationId": "deleteComment",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/events/updateComment/{commentId}": {
+      "put": {
+        "summary": "Update a comment",
+        "tags": ["Event"],
+        "operationId": "updateComment",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Updated comment data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            } 
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/events/likeEvent/{eventId}": {
+      "post": {
+        "summary": "Like an event",
+        "tags": ["Event"],
+        "operationId": "likeEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event liked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/events/removelikeEvent/{eventId}": {
+      "post": {
+        "summary": "Remove like from an event",
+        "tags": ["Event"],
+        "operationId": "removelikeEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Like removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/donations/{eventId}": {
+      "post": {
+        "summary": "Create a new donation",
+        "tags": ["Donation"],
+        "operationId": "createNewDonation",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Donation data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DonationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Donation created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Donation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+    }
+  },
+    "/donations": {
+      "get": {
+        "summary": "Get all donations (admin only)",
+        "tags": ["Donation"],
+        "operationId": "getAllDonations",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Donation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized"
+      },
+      "500": {
+        "description": "Internal server error"
+      }
+    
+  },
+    "/donations/{donationId}": {
+      "get": {
+        "summary": "Get a donation by ID",
+        "tags": ["Donation"],
+        "operationId": "donationById",
+        "parameters": [
+          {
+            "name": "donationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Donation"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized"
+        },
+        "404": {
+          "description": "Donation not found"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    },
+    "delete": {
+      "summary": "Delete a donation by ID (admin only)",
+      "tags": ["Donation"],
+      "operationId": "deleteDonation",
+      "parameters": [
+        {
+          "name": "donationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Donation deleted successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized"
+        },
+        "404": {
+          "description": "Donation not found"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+
+  },
+  "/donations/{donationId}/status": {
+    "put": {
+      "summary": "Update donation status",
+      "tags": ["Donation"],
+      "operationId": "updateStatus",
+      "parameters": [
+        {
+          "name": "donationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ],
+      "requestBody": {
+        "description": "Updated donation status",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateDonationStatusInput"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Donation status updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Donation"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request"
+        },
+        "401": {
+          "description": "Unauthorized"
+        },
+        "404": {
+          "description": "Donation not found"
+        },
+        "500": {
+          "description": "Internal server error"
         }
       }
     }
   },
+  "/events/{eventId}/totalDonations": {
+    "get": {
+      "summary": "Get total donations for an event",
+      "tags": ["Donation"],
+      "operationId": "totalDonationForEvent",
+      "parameters": [
+        {
+          "name": "eventId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "totalDonations": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+  "/donors/topDonors": {
+    "get": {
+      "summary": "Get top donors",
+      "tags": ["Donation"],
+      "operationId": "topDonations",
+      "security": [
+        {
+          "BearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TopDonor"
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  }
+},
   "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
-      "Events": {
+        "EventInput": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "category": {
+              "type": "string"
+            }
+          }
+        },
+      "Event": {
         "type": "object",
         "properties": {
           "name": {
@@ -328,30 +1398,13 @@
             "example": "Climate Action Meeting"
           },
           "location": {
-            "type": "integer",
-            "properties": {
-              "street": {
-                "type": "string",
-                "example": "437 Lytton"
-              },
-              "city": {
-                "type": "string",
-                "example": "Palo Alto"
-              },
-              "state": {
-                "type": "string",
-                "example": "CA"
-              },
-              "zip": {
-                "type": "string",
-                "example": "94301"
-              }
-            }
+            "type": "string",
+            "example": "Ankara"
           },
           "time": {
             "type": "string",
             "format": "date-time",
-            "example": "07/07/2007"
+            "example": "07/07/2024"
           },
           "description": {
             "type": "string",
@@ -359,16 +1412,132 @@
             "example": "It is an online event for people to get plugged in and charged up with climate action"
           },
           "picture": {
-            "type": "array",
-            "xml": {
-              "wrapped": true
+            "type": "string",
+            "example": "https://example.com/beach_cleanup.jpg"
             },
-            "items": {
+            "category": {
               "type": "string",
-              "xml": {
-                "name": "photoUrl"
-              }
+              "example": "community"
+            },
+            "maxParticipants": {
+              "type": "integer",
+              "example": 50
+            },
+            "registrationDeadline": {
+              "type": "string",
+              "format": "date-time",
+            "example": "07/07/2024"  
+            },
+            "isPublished": {
+              "type": "boolean"
             }
+          }
+        },
+      "CommentInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      },
+      "SignInInput": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "theuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          }
+        }
+      },
+      "SignUpInput": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "theuser"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@email.com"
+          },
+          "firstname": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastname": {
+            "type": "string",
+            "example": "James"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          },
+          "password2": {
+            "type": "string",
+            "example": "123456"
+          },
+          "acceptTos": {
+            "type": "boolean"
+          },
+          "avatar": {
+            "type": "string",
+            "example": "avatar_url"
+          }
+        }
+      },
+      "UpdateProfileInput": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        }
+      },
+      "ChangePasswordInput": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword1": {
+            "type": "string"
+          },
+          "newPassword2": {
+            "type": "string"
+          }
+        }
+      },
+      "ForgotPasswordInput": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
           }
         }
       },
@@ -377,13 +1546,13 @@
         "properties": {
           "username": {
             "type": "string",
-            "example": "theUser"
+            "example": "theuser"
           },
-          "firstName": {
+          "firstname": {
             "type": "string",
             "example": "John"
           },
-          "lastName": {
+          "lastname": {
             "type": "string",
             "example": "James"
           },
@@ -393,48 +1562,70 @@
           },
           "password": {
             "type": "string",
-            "example": "12345"
+            "example": "123456"
           },
           "password2": {
             "type": "string",
-            "example": "12345"
+            "example": "123456"
           },
           "acceptTos": {
             "type": "boolean"
           }
         }
       },
-      "Tag": {
+      "DonationInput": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
+          "amount": {
+            "type": "number",
+            "example": "100"
           },
-          "name": {
-            "type": "string"
+          "currency": {
+            "type": "string",
+            "example": "USD"
           }
-        },
-        "xml": {
-          "name": "tag"
         }
       },
-      "requestBodies": {
-        "Pet": {
-          "description": "Pet object that needs to be added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
-            }
+      "UpdateDonationStatusInput": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "completed"
           }
-        },
+        }
+      },
+      "Donation": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "donationStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "TopDonor": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          }
+        }
+      },
         "UserArray": {
           "description": "List of user object",
           "content": {
@@ -448,7 +1639,10 @@
             }
           }
         }
-      }
-    }
   }
 }
+}
+
+
+
+
