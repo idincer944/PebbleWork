@@ -7,14 +7,16 @@ const eventController = require('../controllers/eventController');
 const commentController = require('../controllers/commentController');
 const likeController = require('../controllers/likeController');
 
+router.get('/search', eventController.searchEvents);
+router.get('/filter', eventController.filterEvents);
+
 router.get('/', eventController.getAllEvents);
 router.get('/myEvents', authenticate, eventController.getAllUserEvents);
 router.post('/', authenticate, eventController.createNewEvent);
 router.get('/:eventId', eventController.getEventById);
 router.delete('/:eventId', authenticate, eventController.cancelEvent);
 router.put('/:eventId', authenticate, eventController.updateEvent);
-router.get('/search', eventController.searchEvents);
-router.get('/filter', eventController.filterEvents);
+
 router.post('/join/:eventId', authenticate, eventController.joinEvent);
 router.post('/leave/:eventId', authenticate, eventController.leaveEvent);
 

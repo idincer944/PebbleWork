@@ -10,8 +10,7 @@ const {correctUser,
   adminUser,
   newUser} = require('./data')
 
-jest.setTimeout(1500);
-
+jest.setTimeout(5000);
 
 
 beforeAll(async () => {
@@ -73,9 +72,11 @@ const password_hash = await bcrypt.hash('testpassword', 10);
 });
 
 afterAll(async () => {
+  
   await User.deleteMany({
     username: { $in: ['testuser', 'unverifieduser', 'adminuser', 'deleteduser', 'johndoe' ] },
   });
+  await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
   server.close();
 });

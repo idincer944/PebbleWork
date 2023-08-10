@@ -1,0 +1,75 @@
+
+   
+  
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <% if (event) { %>
+                <div class="card">
+                    <img src="https://iasbh.tmgrup.com.tr/3446cb/821/464/0/0/724/409?u=https://isbh.tmgrup.com.tr/sbh/2021/10/22/cig-kofte-tarifi-yapilisi-ve-malzemeleri-evde-cig-kofte-nasil-yapilir-1634883508526.jpg" class="card-img-top" alt="<%= event.name %>">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= event.name %></h5>
+                        <p class="card-text"><%= event.description %></p>
+                        <p class="card-text"><strong>Date:</strong> <%= new Date(event.time).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) %></p>
+                        <p class="card-text"><strong>Location:</strong> <%= event.location %></p>
+                        <p class="card-text"><strong>Category:</strong> <%= event.category %></p>
+                        <p class="card-text"><strong>Participants:</strong> <%= event.participants.length %></p>
+                        <p class="card-text"><strong>Registration Deadline:</strong> <%=  new Date(event.registrationDeadline).toLocaleString('tr-TR', { dateStyle: 'short'}) %></p>
+                        
+                        <!-- Comments Section -->
+                        <% if (event.allowComments) { %>
+                            <h6 class="mt-3">Comments (<%= event.comments.length %>)</h6>
+                            <div class="list-group">
+                                <% event.comments.forEach(function(comment) { %>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-start">
+                                            <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="User Avatar">
+                                            <div>
+                                                <strong><%= comment.user.username %></strong>
+                                                <p class="mb-0"><%= comment.content %></p>
+                                                <small><%= new Date(comment.createdAt).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) %></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                
+                        <!-- Likes and Donations -->
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary"><%= event.likes.length %> Likes</button>
+                            <button class="btn btn-outline-success"><%= event.donations.length %> Donations</button>
+                        </div>
+                    </div>
+                </div>
+                
+            <% } else { %>
+            <div class="alert alert-danger">Event not found.</div>
+            <% } %>
+        </div>
+
+        <!-- Move the "Similar Events" section here -->
+        <div class="col-md-4">
+            <aside class="mt-4">
+                <a href="/events/<%= event._id %>" class="btn btn-primary" style="margin: 40px;">See the JSON format</a>
+                <h4>Similar Events</h4>
+
+                <div class="col-md-12 mb-3">
+                    <div class="card">
+                        <img src="#" class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h6 class="card-title"><%= event.name %></h6>
+                            <p class="card-text"><%= event.description %></p>
+                            <a href="/events/<%= event._id %>" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more similar event cards here if needed -->
+            </aside>
+        </div>
+    </div>
+</div>
+
+
+<!-- Include Bootstrap JS (Optional, only if you need JavaScript functionality) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
