@@ -11,12 +11,10 @@ router.get('/events/search', async (req, res) => {
         console.log("searching for", q);
         
         const response = await axios.get(`http://localhost:3000/events/search?q=${q}`);
-        const events = response.data;
-        console.log("Number of events:", events.length);
+        const events = response.data;        
+         res.render('events', {events} );
 
-        // res.render('events', { events });
-
-        res.json(events);
+       // res.json(events);
     } catch (error) {
         console.error('Error fetching events:', error);
         res.status(500).send('Internal Server Error');

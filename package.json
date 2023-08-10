@@ -56,10 +56,9 @@
     "supertest": "^6.1.6"
   },
   "jest": {
-    "testRegex": "((\\.|/)(test|spec))\\.[jt]sx?$"
-  },
-  "fsevents": {
-    "version": "2.3.2",
-    "platform": "darwin"
+    "testRegex": "((\\.|/)(test|spec))\\.[jt]sx?$",
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)/"
+    ]
   }
 }
