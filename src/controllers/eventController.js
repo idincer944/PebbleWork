@@ -214,9 +214,21 @@ module.exports = {
           { name: { $regex: searchQuery, $options: 'i' } },
           { description: { $regex: searchQuery, $options: 'i' } },
         ],
-      });
+      }).populate({
+        path: 'participants',
+        select: 'username avatar',
+      })
+      .populate({
+        path: 'comments',
+        select: 'user content -_id createdAt',
+        populate: {
+          path: 'user',
+          select: 'username avatar -_id',
+        },
+        options: { virtuals: true },
+      });;
 
-      res.status(200).json({ message: 'Events found successfully', events });
+      res.status(200).json({ events });
     } catch (error) {
       res
         .status(500)
