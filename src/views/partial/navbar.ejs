@@ -2,19 +2,19 @@
     <div class="container h-100">
       <div class="row align-items-center align-content-center h-100">
         <div class="col-3">
-          <div class="logo"><a href="/">VolunteeringEvents</a></div>
+          <div class="logo"><a href="/fe/events">Cigkoftes</a></div>
         </div>
         <div class="col-6">
           <ul class="nav justify-content-center align-items-center">
             <li class="nav-item">
-              <a class="nav-link" href="/">Home</a>
+              <a class="nav-link" href="/">API docs</a>
             </li>
-            <% if (false) { %>
+            <% if (true) { %>
             <li class="nav-item">
-              <a class="nav-link" href="/user/signin">Login</a>
+              <a class="nav-link" href="/fe/login">Login</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link btn btn-primary text-white" href="/user/signup">Sign up</a>
+              <a class="nav-link btn btn-primary " href="/fe/signup">Sign up</a>
             </li>
             <% } else { %>
             <li class="nav-item">
@@ -42,15 +42,12 @@
           </ul>
         </div>
         <div class="col-3">
-          <form id="search-form" action="/search">
-            <div class="input-group">
-              <div class="input-group-text" id="btnGroupAddon">
-                <i class="bi-search"></i>
-              </div>
-              <input type="search" class="form-control form-control-sm" placeholder="Search blog" name="query"
-                aria-label="Search Blog" aria-describedby="btnGroupAddon" />
-            </div>
-          </form>
+          <form action="https://example.com/search" method="get">
+            <label for="search-input">Search:</label>
+            <input type="text" id="search-input" name="q" placeholder="Enter your search term">
+            <button type="submit">Search</button>
+        </form>
+        
         </div>
       </div>
     </div>

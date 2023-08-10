@@ -37,6 +37,14 @@ router.get('/login', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+router.get('/signup', async (req, res) => {
+    try {
+        res.render('signup'); 
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
 module.exports = router;
 
 
