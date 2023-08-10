@@ -229,7 +229,7 @@ module.exports = {
         options: { virtuals: true },
       });;
 
-      res.status(200).json({ events });
+      res.status(200).json( events );
     } catch (error) {
       res
         .status(500)

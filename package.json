@@ -55,6 +55,9 @@
     "supertest": "^6.1.6"
   },
   "jest": {
-    "testRegex": "((\\.|/)(test|spec))\\.[jt]sx?$"
+    "testRegex": "((\\.|/)(test|spec))\\.[jt]sx?$",
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)/"
+    ]
   }
 }
