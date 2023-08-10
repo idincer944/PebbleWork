@@ -13,12 +13,11 @@ exports.authenticate = (req, res, next) => {
         }
 
         const newUser = await User.findById(user.user_id)
-        console.log(newUser.is_verified)
 
         if(!newUser.is_verified) {
           return res.status(401).json({message: 'Please verify your account first'})
         }
-        
+
         req.user = user;
         next();
       });
