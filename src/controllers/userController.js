@@ -21,12 +21,12 @@ module.exports = {
       const { username, password, rememberMe } = req.body;
       const user = await User.findOne({ username });
       if (!user) {
-        return res.status(401).json({ error: 'Wrong username or password' });
+        return res.status(401).json({ error: 'Wrong username ' });
       }
 
       const valid = await bcrypt.compare(password, user.password_hash);
       if (!valid) {
-        return res.status(401).json({ error: 'Wrong username or password' });
+        return res.status(401).json({ error: 'Wrong password' });
       }
 
       const expiresIn = rememberMe ? '7d' : '2h';

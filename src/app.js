@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const expresslayouts= require('express-ejs-layouts')
 require('dotenv').config();
 
 const fs = require('fs');
@@ -10,25 +11,27 @@ const userRouter = require('./routes/user');
 const eventRouter = require('./routes/event');
 const donationRouter = require('./routes/donation');
 const blogRouter = require('./routes/blog');
+const FERouter = require('./routes/frontend-routes');
 const connectToMongo = require('./db');
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.set("view engine", "ejs")
+app.set("views", 'src/views')
+app.use(expresslayouts)
+
 
 app.use('/users', userRouter);
 app.use('/events', eventRouter);
 app.use('/donations', donationRouter);
 app.use('/blogs', blogRouter);
+app.use('/FE', FERouter);
 
 connectToMongo();
 
 const PORT = process.env.NODE_LOCAL_PORT || 3000;
-
-// app.get('/', (req, res) => {
-//   res.send('Hello World!');
-// });
 
 const swaggerSpec = {
   openapi: '3.1.0',
