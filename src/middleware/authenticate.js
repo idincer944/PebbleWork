@@ -7,10 +7,18 @@ exports.authenticate = (req, res, next) => {
   const token = req.cookies.token;
   if (token) {
     try {
-      jwt.verify(token, process.env.TOKEN_KEY, (err, user) => {
+      jwt.verify(token, process.env.TOKEN_KEY, async (err, user) => {
         if (err) {
           return res.status(403).json({ error: 'Invalid token' });
         }
+
+        const newUser = await User.findById(user.user_id)
+        console.log(newUser.is_verified)
+
+        if(!newUser.is_verified) {
+          return res.status(401).json({message: 'Please verify your account first'})
+        }
+        
         req.user = user;
         next();
       });

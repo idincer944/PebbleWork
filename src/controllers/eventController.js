@@ -68,7 +68,7 @@ module.exports = {
       return res.status(400).json({ errors: errorMessages });
     }
 
-    const { name, location, time, description, picture, category } =
+    const { name, location, time, description, picture, category, maxParticipants } =
       validationResult.value;
 
     const createdBy = req.user.user_id;
@@ -82,6 +82,7 @@ module.exports = {
         picture,
         category,
         createdBy,
+        maxParticipants
       });
 
       const savedEvent = await newEvent.save();
