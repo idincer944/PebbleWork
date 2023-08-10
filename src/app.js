@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const expresslayouts= require('express-ejs-layouts')
 require('dotenv').config();
 
 const fs = require('fs');
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.set("view engine", "ejs")
 app.set("views", 'src/views')
+app.use(expresslayouts)
 
 
 app.use('/users', userRouter);

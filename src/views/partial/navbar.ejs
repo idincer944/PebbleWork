@@ -9,7 +9,7 @@
             <li class="nav-item">
               <a class="nav-link" href="/">Home</a>
             </li>
-            <% if (!user) { %>
+            <% if (false) { %>
             <li class="nav-item">
               <a class="nav-link" href="/user/signin">Login</a>
             </li>
@@ -22,12 +22,12 @@
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                <img src="<%= user.avatar %>" class="rounded-circle img-fluid mx-2" style="height: 2.5rem" />
-                <b><%= user.firstname?? user.username %></b>
+                <img src="" class="rounded-circle img-fluid mx-2" style="height: 2.5rem" />
+                <b>SAID BARADAI</b>
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="/articles?eventId=<%= user.username %> ">My events</a>
+                  <a class="dropdown-item" href="/articles?eventId ">My events</a>
                 </li>
                 <li>
                   <a class="dropdown-item" href="/user/edit">Edit profile</a>
@@ -55,6 +55,7 @@
       </div>
     </div>
   </nav>
+  <hr>
   <script>
     const form = document.getElementById("search-form");
   
