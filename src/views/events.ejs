@@ -25,7 +25,7 @@
                     <div class="card-body">
                         <h5 class="card-title"><%= event.name %></h5>
                         <p class="card-text"><%= event.description %></p>
-                        <p class="card-text"><strong>Date:</strong> <%= event.time %></p>
+                        <p class="card-text"><strong>Date:</strong> <%= new Date(event.time).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) %></p>
                         <p class="card-text"><strong>Location:</strong> <%= event.location %></p>
                         <p class="card-text"><strong>Category:</strong> <%= event.category %></p>
                         <a  href="/fe/events/<%= event._id %>" class="btn btn-primary">Learn More</a>
