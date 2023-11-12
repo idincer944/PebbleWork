@@ -2,7 +2,7 @@
 
 
 
-**ÇİĞKOFTES** is a platform to organize volunteer local events and gatherings to create meaningful work and an impact. The website will allow users to find and participate in volunteer events in their community, as well as create their own events and invite others to join. PebbleWork will also allow users to **donate** to events, **leave comments** on events, and view the total amount of donations that have been made to each event.
+**Pebble Work** is a platform to organize volunteer local events and gatherings to create meaningful work and an impact. The website will allow users to find and participate in volunteer events in their community, as well as create their own events and invite others to join. PebbleWork will also allow users to **donate** to events, **leave comments** on events, and view the total amount of donations that have been made to each event.
 
 The target audience for PebbleWork is the general public, with a focus on volunteers who want to create a change in the world. The website will be accessible on desktop and mobile devices.
 
